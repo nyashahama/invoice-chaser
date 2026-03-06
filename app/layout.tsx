@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Syne } from "next/font/google";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -36,7 +38,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={syne.variable}>{children}</body>
+      <body className={syne.variable}>
+        {/* AuthProvider gives Nav/Hero/Dashboard access to session state */}
+        <ClerkProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

@@ -1,8 +1,69 @@
 "use client";
 
 import React from "react";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+  const { isSignedIn, user } = useUser();
+  const router = useRouter();
+
+  if (isSignedIn) {
+    const name =
+      user.firstName ??
+      user.emailAddresses[0]?.emailAddress.split("@")[0] ??
+      "there";
+
+    return (
+      <section className="hero">
+        <div className="hero-content">
+          <div className="hero-eyebrow">Welcome back</div>
+          <h1 className="hero-title">
+            Hey, <em>{name}.</em>
+          </h1>
+          <p className="hero-sub">
+            Your autopilot is running. Check your dashboard to see what&apos;s
+            been collected while you were away.
+          </p>
+          <div className="hero-actions">
+            <button
+              className="btn-primary"
+              onClick={() => router.push("/dashboard")}
+            >
+              <span>Go to dashboard</span>
+              <span>→</span>
+            </button>
+            <a href="/demo" className="btn-ghost">
+              Try live demo ↗
+            </a>
+          </div>
+        </div>
+        <div className="hero-visual">
+          <div className="invoice-card">
+            <div className="invoice-header">
+              <div className="dot dot-r" />
+              <div className="dot dot-y" />
+              <div className="dot dot-g" />
+              <div className="invoice-title-bar">autopilot — running</div>
+            </div>
+            <div className="invoice-body">
+              <div className="inv-row">
+                <span>Account</span>
+                <strong>{user.emailAddresses[0]?.emailAddress}</strong>
+              </div>
+              <div className="inv-total">
+                <span>Status</span>
+                <span style={{ color: "var(--green)", fontSize: "16px" }}>
+                  ● Active
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="hero">
       <div className="hero-content">
@@ -10,8 +71,7 @@ export default function Hero() {
         <h1 className="hero-title">
           Stop chasing.
           <br />
-          Start
-          <em>getting paid.</em>
+          Start <em>getting paid.</em>
         </h1>
         <p className="hero-sub">
           Automated follow-ups that escalate from polite to firm — and stop the
