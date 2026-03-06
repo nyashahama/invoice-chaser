@@ -6,6 +6,13 @@ import { useUser, useClerk } from "@clerk/nextjs";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
+interface User {
+  email: string;
+  name: string;
+  plan: "trial" | "solo" | "pro" | "team";
+  trialEndsAt: string;
+}
+
 type Tone = "polite" | "firm" | "final";
 type InvoiceStatus = "active" | "paid" | "overdue" | "draft";
 
