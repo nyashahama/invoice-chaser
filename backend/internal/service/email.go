@@ -94,6 +94,7 @@ func (s *EmailService) GenerateWithAI(ctx context.Context, p GenerateEmailParams
 
 	// Inject tracking pixel and click link. This is an EmailService concern,
 	// not an OpenAI concern — the model only ever sees [PAYMENT_LINK].
+	email.BodyText = s.injectClickLink(email.BodyText, p.Invoice.ClickToken)
 	email.BodyHTML = s.injectTracking(email.BodyHTML, p.Reminder.OpenToken, p.Invoice.ClickToken)
 
 	return GenerateEmailResult{
@@ -119,11 +120,12 @@ func (s *EmailService) FallbackEmail(p GenerateEmailParams) GenerateEmailResult 
 
 	// Inject tracking — [PAYMENT_LINK] is preserved by oai.FallbackEmail
 	// specifically so this injection path works uniformly.
+	bodyText := s.injectClickLink(fb.BodyText, p.Invoice.ClickToken)
 	bodyHTML := s.injectTracking(fb.BodyHTML, p.Reminder.OpenToken, p.Invoice.ClickToken)
 
 	return GenerateEmailResult{
 		Subject:  fb.Subject,
-		BodyText: fb.BodyText,
+		BodyText: bodyText,
 		BodyHTML: bodyHTML,
 		// OpenAIPromptTokens / OpenAICompletionTokens intentionally zero.
 	}
@@ -162,8 +164,7 @@ func (s *EmailService) GenerateAndSend(ctx context.Context, p GenerateEmailParam
 // injectTracking replaces [PAYMENT_LINK] with a tracked click URL and
 // appends a 1×1 transparent open-tracking pixel to the HTML.
 func (s *EmailService) injectTracking(html, openToken, clickToken string) string {
-	clickURL := fmt.Sprintf("%s/track/click/%s", s.appBaseURL, clickToken)
-	html = strings.ReplaceAll(html, "[PAYMENT_LINK]", clickURL)
+	html = s.injectClickLink(html, clickToken)
 
 	pixel := fmt.Sprintf(
 		`<img src="%s/track/open/%s" width="1" height="1" style="display:none" alt="">`,
@@ -175,6 +176,11 @@ func (s *EmailService) injectTracking(html, openToken, clickToken string) string
 		html += pixel
 	}
 	return html
+}
+
+func (s *EmailService) injectClickLink(body, clickToken string) string {
+	clickURL := fmt.Sprintf("%s/track/click/%s", s.appBaseURL, clickToken)
+	return strings.ReplaceAll(body, "[PAYMENT_LINK]", clickURL)
 }
 
 // firstNameOrName returns contact if non-empty, otherwise the company/client name.

@@ -169,12 +169,17 @@ func (h *ReminderHandler) DeleteSequence(w http.ResponseWriter, r *http.Request)
 
 // GetReminder godoc — GET /api/v1/reminders/{id}
 func (h *ReminderHandler) GetReminder(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.UserIDFromCtx(r.Context())
 	id, ok := parseUUID(w, r, "id")
 	if !ok {
 		return
 	}
 	rem, err := h.reminders.GetReminder(r.Context(), id)
 	if err != nil {
+		respondErr(w, err)
+		return
+	}
+	if _, err := h.invoices.GetInvoice(r.Context(), rem.InvoiceID, userID); err != nil {
 		respondErr(w, err)
 		return
 	}

@@ -54,7 +54,7 @@ func TestEmailServiceGenerateAndSendUsesMailer(t *testing.T) {
 	svc := NewEmailService(
 		fakeCompleter{
 			result: oai.CompletionResult{
-				RawJSON: `{"subject":"Reminder","body_text":"Plain body","body_html":"<body><p>Hello</p><a href=\"[PAYMENT_LINK]\">Pay</a></body>"}`,
+				RawJSON: `{"subject":"Reminder","body_text":"Plain body [PAYMENT_LINK]","body_html":"<body><p>Hello</p><a href=\"[PAYMENT_LINK]\">Pay</a></body>"}`,
 			},
 		},
 		mailer,
@@ -114,6 +114,9 @@ func TestEmailServiceGenerateAndSendUsesMailer(t *testing.T) {
 	}
 	if want := "https://app.example.com/track/open/open-token"; !contains(mailer.messages[0].HTMLBody, want) {
 		t.Fatalf("html body missing tracking pixel %q: %s", want, mailer.messages[0].HTMLBody)
+	}
+	if want := "https://app.example.com/track/click/click-token"; !contains(mailer.messages[0].TextBody, want) {
+		t.Fatalf("text body missing tracked click url %q: %s", want, mailer.messages[0].TextBody)
 	}
 }
 

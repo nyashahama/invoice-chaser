@@ -6,11 +6,13 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
 	"github.com/nyashahama/invoice-chaser-backend/internal/domain"
+	"github.com/nyashahama/invoice-chaser-backend/internal/payfast"
 	"github.com/nyashahama/invoice-chaser-backend/internal/service"
 )
 
@@ -23,12 +25,15 @@ type PayFastVerifier interface {
 
 // WebhookHandler handles inbound events from PayFast and SendGrid.
 type WebhookHandler struct {
-	invoices         *service.InvoiceService
-	reminders        *service.ReminderService
-	pfVerifier       PayFastVerifier
-	pfPassphrase     string // from config.PayFastPassphrase; may be empty
-	pfSandbox        bool   // from config.PayFastSandbox
-	log              *slog.Logger
+	invoices      *service.InvoiceService
+	reminders     *service.ReminderService
+	pfVerifier    PayFastVerifier
+	pfMerchantID  string
+	pfMerchantKey string
+	pfPassphrase  string // from config.PayFastPassphrase; may be empty
+	pfSandbox     bool   // from config.PayFastSandbox
+	appBaseURL    string
+	log           *slog.Logger
 }
 
 // NewWebhookHandler constructs the handler.
@@ -37,17 +42,23 @@ func NewWebhookHandler(
 	invoices *service.InvoiceService,
 	reminders *service.ReminderService,
 	pfVerifier PayFastVerifier,
+	pfMerchantID string,
+	pfMerchantKey string,
 	pfPassphrase string,
 	pfSandbox bool,
+	appBaseURL string,
 	log *slog.Logger,
 ) *WebhookHandler {
 	return &WebhookHandler{
-		invoices:     invoices,
-		reminders:    reminders,
-		pfVerifier:   pfVerifier,
-		pfPassphrase: pfPassphrase,
-		pfSandbox:    pfSandbox,
-		log:          log,
+		invoices:      invoices,
+		reminders:     reminders,
+		pfVerifier:    pfVerifier,
+		pfMerchantID:  pfMerchantID,
+		pfMerchantKey: pfMerchantKey,
+		pfPassphrase:  pfPassphrase,
+		pfSandbox:     pfSandbox,
+		appBaseURL:    strings.TrimRight(appBaseURL, "/"),
+		log:           log,
 	}
 }
 
@@ -182,7 +193,7 @@ func (h *WebhookHandler) TrackClick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if inv.IsPaid() {
-		http.Redirect(w, r, "/pay/already-paid", http.StatusFound)
+		http.Error(w, "invoice already paid", http.StatusGone)
 		return
 	}
 
@@ -192,8 +203,21 @@ func (h *WebhookHandler) TrackClick(w http.ResponseWriter, r *http.Request) {
 	// that join on reminder_id are not corrupted with a spurious invoice ID.
 	_ = h.reminders.RecordEvent(r.Context(), uuid.Nil, inv.ID, domain.ReminderEventClicked, meta)
 
-	// Final redirect URL is constructed by the payfast package; placeholder here.
-	http.Redirect(w, r, "/pay/redirect?inv="+inv.ID.String(), http.StatusFound)
+	redirectURL, err := payfast.CheckoutURL(payfast.CheckoutConfig{
+		MerchantID:  h.pfMerchantID,
+		MerchantKey: h.pfMerchantKey,
+		Passphrase:  h.pfPassphrase,
+		NotifyURL:   h.appBaseURL + "/webhooks/payfast",
+		Sandbox:     h.pfSandbox,
+	}, inv)
+	if err != nil {
+		h.log.ErrorContext(r.Context(), "payfast: build checkout url failed",
+			slog.String("invoice_id", inv.ID.String()),
+			slog.String("err", err.Error()))
+		http.Error(w, "payment link unavailable", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
 
 // flattenValues converts url.Values to map[string]string (first value per key).

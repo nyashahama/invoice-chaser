@@ -102,17 +102,20 @@ func main() {
 
 	// ── HTTP router ───────────────────────────────────────────────────────────
 	router := api.NewRouter(api.RouterConfig{
-		JWTSecret:         cfg.JWTSecret,
-		AllowedOrigins:    allowedOrigins(cfg),
-		Log:               log,
-		RefreshExpiry:     cfg.RefreshExpiry,
-		Invoices:          invoiceSvc,
-		Reminders:         reminderSvc,
-		Users:             userSvc,
-		Scheduler:         schedulerSvc,
-		PayFastVerifier:   pfVerifier,
-		PayFastPassphrase: cfg.PayFastPassphrase,
-		PayFastSandbox:    cfg.PayFastSandbox,
+		JWTSecret:          cfg.JWTSecret,
+		AllowedOrigins:     allowedOrigins(cfg),
+		Log:                log,
+		RefreshExpiry:      cfg.RefreshExpiry,
+		Invoices:           invoiceSvc,
+		Reminders:          reminderSvc,
+		Users:              userSvc,
+		Scheduler:          schedulerSvc,
+		PayFastVerifier:    pfVerifier,
+		PayFastMerchantID:  cfg.PayFastMerchantID,
+		PayFastMerchantKey: cfg.PayFastMerchantKey,
+		PayFastPassphrase:  cfg.PayFastPassphrase,
+		PayFastSandbox:     cfg.PayFastSandbox,
+		AppBaseURL:         cfg.AppBaseURL,
 	})
 
 	srv := &http.Server{

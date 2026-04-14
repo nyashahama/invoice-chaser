@@ -18,6 +18,8 @@ This repository is organized as a small monorepo with one frontend app and one b
 - Frontend: copy `frontend/.env.example` to `frontend/.env.local`
 - Backend: copy `backend/.env.example` to `backend/.env`
 
+`APP_BASE_URL` in the backend env should point at the backend's public base URL, because email tracking and PayFast click-through routes are served by the API, not by the Next.js frontend.
+
 ## Frontend
 
 ```bash
