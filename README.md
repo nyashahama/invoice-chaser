@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Invoice Generator Monorepo
 
-## Getting Started
+This repository is organized as a small monorepo with one frontend app and one backend service.
 
-First, run the development server:
+## Apps
+
+- `frontend/`: Next.js 16 application
+- `backend/`: Go 1.24 API, scheduler, and database assets
+
+## Prerequisites
+
+- Node.js 22 with npm
+- Go 1.24+
+- Docker, if you want to run the backend Postgres stack locally
+
+## Environment Files
+
+- Frontend: copy `frontend/.env.example` to `frontend/.env.local`
+- Backend: copy `backend/.env.example` to `backend/.env`
+
+`APP_BASE_URL` in the backend env should point at the backend's public base URL, because email tracking and PayFast click-through routes are served by the API, not by the Next.js frontend.
+
+## Frontend
 
 ```bash
+cd frontend
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Validation:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd frontend
+npm run lint
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Backend
 
-## Learn More
+```bash
+cd backend
+go test ./...
+go build ./...
+```
 
-To learn more about Next.js, take a look at the following resources:
+For local development with the scheduler and API server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cd backend
+make dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The backend `dev` target expects:
 
-## Deploy on Vercel
+- Docker Compose for the local Postgres service
+- `air` installed locally
+- `backend/.env` present
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## CI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GitHub Actions runs separate pipelines for each package:
+
+- `frontend.yml` runs install, lint, and production build for frontend changes
+- `backend.yml` runs `go test ./...` and `go build ./...` for backend changes
