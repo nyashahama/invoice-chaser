@@ -10,13 +10,13 @@
 
 ---
 
-### Task 1: Normalize Repository Structure
+### Task 1: Move Frontend Into Monorepo Layout
 
 **Files:**
 - Modify: `.gitignore`
-- Delete: `backend/.git`
-- Remove from working tree: `frontend/node_modules`, `frontend/.next`, `frontend/.clerk`
-- Verify layout: `frontend/`, `backend/`
+- Remove from working tree: root `frontend` artifacts such as `.next`, `.clerk`, `.env.local`
+- Move: root Next.js app files into `frontend/`
+- Verify layout: `frontend/`
 
 - [ ] **Step 1: Inspect the current tree and confirm monorepo blockers**
 
@@ -26,7 +26,7 @@ find backend -maxdepth 2 -type f | sort
 find frontend -maxdepth 2 -type d | sort
 ```
 
-Expected: deleted old root app files, untracked `frontend/` and `backend/`, nested `backend/.git`, and local frontend build/dependency directories.
+Expected: root Next.js files are ready to move into `frontend/`, and local frontend build/dependency directories are identified for cleanup.
 
 - [ ] **Step 2: Update root ignore rules for the monorepo**
 
@@ -55,46 +55,56 @@ next-env.d.ts
 /backend/coverage.html
 ```
 
-Expected: root ignore rules cover both top-level apps and local artifacts created during development.
+Expected: root ignore rules cover frontend monorepo paths and local artifacts created during development.
 
-- [ ] **Step 3: Remove nested repository metadata and local build artifacts**
+- [ ] **Step 3: Remove root frontend artifacts and move the app into `frontend/`**
 
 Run:
 
 ```bash
-rm -rf backend/.git frontend/node_modules frontend/.next frontend/.clerk
+rm -rf .next .clerk .env.local frontend/node_modules frontend/.next frontend/.clerk
 ```
 
-Expected: `backend/` is now plain source owned by the root repo, and frontend build/dependency directories are gone from the working tree.
+Expected: root frontend artifacts are gone from the working tree, and the Next.js app lives under `frontend/`.
 
 - [ ] **Step 4: Verify the cleaned structure**
 
 Run:
 
 ```bash
-test ! -d backend/.git
-test ! -d frontend/node_modules
-test ! -d frontend/.next
+test ! -d .next
+test ! -d .clerk
+test ! -f .env.local
 git status --short
 ```
 
-Expected: no nested repo metadata remains, local dependency/build directories are removed, and source files are ready to be staged from the root repository.
+Expected: no root frontend artifacts remain, and the frontend package is ready to be staged from the root repository.
 
 - [ ] **Step 5: Commit the structural cleanup**
 
 ```bash
-git add .gitignore frontend backend
-git commit -m "chore: normalize monorepo structure"
+git add .gitignore frontend
+git commit -m "chore: move next app into frontend package"
 ```
 
-### Task 2: Make Backend Build and Test Cleanly
+### Task 2: Import Backend Package Into The Monorepo
 
 **Files:**
-- Modify: `backend/Makefile`
-- Modify: `backend/cmd/server/main.go` if compilation issues exist
-- Modify: `backend/internal/**` only if required to satisfy `go test ./...` or `go build ./...`
+- Add: `backend/**`
+- Remove from working tree: `backend/.git`
+- Verify backend package from the repo root
 
-- [ ] **Step 1: Run the backend test suite to capture the current failures**
+- [ ] **Step 1: Remove nested backend repository metadata if present**
+
+Run:
+
+```bash
+rm -rf backend/.git
+```
+
+Expected: `backend/` is owned only by the root repository.
+
+- [ ] **Step 2: Run the backend test suite to capture the current status**
 
 Run:
 
@@ -104,9 +114,9 @@ go test ./...
 
 Working directory: `backend/`
 
-Expected: either PASS or concrete compile/test failures that identify the exact files requiring cleanup.
+Expected: either PASS or concrete compile/test failures that identify whether backend fixes are needed before commit.
 
-- [ ] **Step 2: Run the backend build to capture build-only failures**
+- [ ] **Step 3: Run the backend build to capture build-only failures**
 
 Run:
 
@@ -118,7 +128,7 @@ Working directory: `backend/`
 
 Expected: either PASS or concrete compile/build failures that must be fixed before CI is added.
 
-- [ ] **Step 3: Apply the minimal backend fixes required for a clean contract**
+- [ ] **Step 4: Apply the minimal backend fixes required for a clean contract**
 
 If a compile error exists in `backend/cmd/server/main.go` or another package, patch only the failing code path. Example minimal fix shape:
 
@@ -146,7 +156,7 @@ build:
 
 Expected: backend source and commands are aligned with the real CI validation path, with no speculative refactors.
 
-- [ ] **Step 4: Re-run backend verification**
+- [ ] **Step 5: Re-run backend verification**
 
 Run:
 
@@ -159,11 +169,11 @@ Working directory: `backend/`
 
 Expected: both commands pass cleanly.
 
-- [ ] **Step 5: Commit backend readiness fixes**
+- [ ] **Step 6: Commit the backend package**
 
 ```bash
 git add backend
-git commit -m "fix: make backend build cleanly in monorepo"
+git commit -m "feat: add backend service package"
 ```
 
 ### Task 3: Add Backend GitHub Actions Workflow
