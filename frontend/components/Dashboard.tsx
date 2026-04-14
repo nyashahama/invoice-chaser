@@ -286,9 +286,10 @@ async function generateEmail(
 // ─── SUB-COMPONENTS ───────────────────────────────────────────────────────────
 
 function TrialBanner({ user }: { user: User }) {
+  const [currentTime] = useState(() => Date.now());
   const daysLeft = Math.max(
     0,
-    Math.ceil((new Date(user.trialEndsAt).getTime() - Date.now()) / 86400000),
+    Math.ceil((new Date(user.trialEndsAt).getTime() - currentTime) / 86400000),
   );
   if (user.plan !== "trial") return null;
   return (
@@ -1353,7 +1354,7 @@ export default function Dashboard() {
                       marginBottom: "28px",
                     }}
                   >
-                    // All fields are used to personalise the emails
+                    {"// All fields are used to personalise the emails"}
                   </div>
                   <div className="form-grid">
                     <div className="form-group">
@@ -1483,7 +1484,7 @@ export default function Dashboard() {
                       marginBottom: "28px",
                     }}
                   >
-                    // Choose how assertive you want to get
+                    {"// Choose how assertive you want to get"}
                   </div>
 
                   <div
@@ -1877,7 +1878,7 @@ export default function Dashboard() {
                           textTransform: "uppercase",
                         }}
                       >
-                        // System activity
+                        {"// System activity"}
                       </div>
                       <div
                         style={{

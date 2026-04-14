@@ -14,7 +14,7 @@ export default function HowItWorks() {
       </h2>
       <div ref={ref} className="steps reveal">
         <div className="step">
-          <div className="step-num">// 01</div>
+          <div className="step-num">{"// 01"}</div>
           <div className="step-icon">📄</div>
           <div className="step-title">Upload your invoice</div>
           <p className="step-desc">
@@ -23,7 +23,7 @@ export default function HowItWorks() {
           </p>
         </div>
         <div className="step">
-          <div className="step-num">// 02</div>
+          <div className="step-num">{"// 02"}</div>
           <div className="step-icon">🎚️</div>
           <div className="step-title">Pick your tone</div>
           <p className="step-desc">
@@ -32,7 +32,7 @@ export default function HowItWorks() {
           </p>
         </div>
         <div className="step">
-          <div className="step-num">// 03</div>
+          <div className="step-num">{"// 03"}</div>
           <div className="step-icon">✅</div>
           <div className="step-title">Get paid, we stop</div>
           <p className="step-desc">

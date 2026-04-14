@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState, useRef, useCallback } from "react";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -608,7 +609,6 @@ export default function DemoPage() {
       "All emails ready",
       "Awaiting your activation",
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [generating, invoiceData, tone, addTimelineEvent]);
 
   // ── Activate ──
@@ -664,16 +664,16 @@ export default function DemoPage() {
 
       {/* NAV */}
       <nav className="demo-nav">
-        <a href="/" className="nav-logo">
+        <Link href="/" className="nav-logo">
           Invoice<span>Chaser</span>
-        </a>
+        </Link>
         <div className="nav-badge">
           <div className="pulse-dot" />
           Live Demo
         </div>
-        <a href="/" className="nav-back">
+        <Link href="/" className="nav-back">
           ← Back to site
-        </a>
+        </Link>
       </nav>
 
       <div className="app-shell">
@@ -757,7 +757,7 @@ export default function DemoPage() {
           {/* Sequence preview */}
           {step >= 2 && (
             <div className="sequence-preview visible">
-              <div className="seq-label">// Reminder Sequence</div>
+              <div className="seq-label">{"// Reminder Sequence"}</div>
               {schedule.map((item, i) => (
                 <div key={i} className="seq-item">
                   {i < schedule.length - 1 && <div className="seq-line" />}
@@ -791,8 +791,7 @@ export default function DemoPage() {
             </div>
             <div className="step-view-title">Invoice details</div>
             <div className="step-view-sub">
-              // Enter the invoice you want to collect. All fields used to
-              personalize emails.
+              {"// Enter the invoice you want to collect. All fields used to personalize emails."}
             </div>
 
             <div className="form-grid">
@@ -914,8 +913,7 @@ export default function DemoPage() {
             </div>
             <div className="step-view-title">Tone &amp; schedule</div>
             <div className="step-view-sub">
-              // Choose how assertive you want to get, and set your follow-up
-              cadence.
+              {"// Choose how assertive you want to get, and set your follow-up cadence."}
             </div>
 
             <div style={{ marginBottom: "10px" }} className="form-label">
@@ -1031,8 +1029,7 @@ export default function DemoPage() {
               className="step-view-sub"
               style={{ marginTop: "-12px", marginBottom: "24px" }}
             >
-              // Your AI-generated reminder sequence — review, edit, then
-              activate autopilot.
+              {"// Your AI-generated reminder sequence — review, edit, then activate autopilot."}
             </div>
 
             <div className="email-sequence">
@@ -1078,7 +1075,7 @@ export default function DemoPage() {
       {showTimeline && (
         <div className="timeline-overlay visible">
           <div className="timeline-header">
-            <div className="timeline-title">// System activity</div>
+            <div className="timeline-title">{"// System activity"}</div>
           </div>
           <div className="timeline-list" ref={timelineRef}>
             {timeline.map((ev) => {

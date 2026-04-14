@@ -119,7 +119,7 @@ export default function Hero() {
               <span className="amount">$12,500</span>
             </div>
             <div className="reminder-thread">
-              <div className="thread-label">// auto-reminders sent</div>
+              <div className="thread-label">{"// auto-reminders sent"}</div>
               <div className="reminder-item">
                 <div className="r-icon r-sent">✓</div>
                 <div className="r-text">

@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
 } from "react";
 
@@ -65,14 +64,8 @@ function clearUser() {
 // ─── PROVIDER ─────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Rehydrate from sessionStorage on mount
-  useEffect(() => {
-    setUser(readUser());
-    setLoading(false);
-  }, []);
+  const [user, setUser] = useState<User | null>(() => readUser());
+  const [loading] = useState(false);
 
   const signUp = useCallback(async (email: string, name?: string) => {
     // ── REPLACE THIS BLOCK with your real API call ──────────────────────────
