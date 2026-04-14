@@ -10,11 +10,18 @@ import (
 
 // AuthHandler handles registration, login, token refresh, and logout.
 type AuthHandler struct {
-	users *service.UserService
+	users         *service.UserService
+	refreshExpiry time.Duration
 }
 
-func NewAuthHandler(users *service.UserService) *AuthHandler {
-	return &AuthHandler{users: users}
+func NewAuthHandler(users *service.UserService, refreshExpiry time.Duration) *AuthHandler {
+	if refreshExpiry <= 0 {
+		refreshExpiry = 7 * 24 * time.Hour
+	}
+	return &AuthHandler{
+		users:         users,
+		refreshExpiry: refreshExpiry,
+	}
 }
 
 // Register godoc — POST /api/v1/auth/register
@@ -53,7 +60,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
 	respond(w, http.StatusCreated, map[string]any{
 		"access_token": tokens.AccessToken,
 		"user":         shapeUser(user),
@@ -76,7 +83,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
 	respond(w, http.StatusOK, map[string]any{
 		"access_token": tokens.AccessToken,
 		"user":         shapeUser(user),
@@ -97,7 +104,7 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
 	respond(w, http.StatusOK, map[string]any{
 		"access_token": tokens.AccessToken,
 	})
@@ -123,8 +130,8 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// setRefreshCookie writes the refresh token as a 7-day httpOnly Secure cookie.
-func setRefreshCookie(w http.ResponseWriter, token string) {
+// setRefreshCookie writes the refresh token as an httpOnly Secure cookie.
+func setRefreshCookie(w http.ResponseWriter, token string, expiry time.Duration) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh_token",
 		Value:    token,
@@ -132,7 +139,7 @@ func setRefreshCookie(w http.ResponseWriter, token string) {
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
-		MaxAge:   int((7 * 24 * time.Hour).Seconds()),
+		MaxAge:   int(expiry.Seconds()),
 	})
 }
 

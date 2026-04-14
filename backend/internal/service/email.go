@@ -17,6 +17,9 @@ import (
 // internal/openai package via the Completer interface.
 type EmailService struct {
 	ai         oai.Completer // injectable for tests — swap with a fake Completer
+	mailer     Mailer
+	fromName   string
+	fromAddr   string
 	maxTokens  int
 	appBaseURL string
 	log        *slog.Logger
@@ -25,12 +28,15 @@ type EmailService struct {
 // NewEmailService constructs an EmailService.
 // ai must be a *oai.Client in production; inject a fake oai.Completer in tests.
 // maxTokens ≤ 0 defaults to 500.
-func NewEmailService(ai oai.Completer, maxTokens int, appBaseURL string, log *slog.Logger) *EmailService {
+func NewEmailService(ai oai.Completer, mailer Mailer, fromName, fromAddr string, maxTokens int, appBaseURL string, log *slog.Logger) *EmailService {
 	if maxTokens <= 0 {
 		maxTokens = 500
 	}
 	return &EmailService{
 		ai:         ai,
+		mailer:     mailer,
+		fromName:   fromName,
+		fromAddr:   fromAddr,
 		maxTokens:  maxTokens,
 		appBaseURL: strings.TrimRight(appBaseURL, "/"),
 		log:        log,
@@ -121,6 +127,36 @@ func (s *EmailService) FallbackEmail(p GenerateEmailParams) GenerateEmailResult 
 		BodyHTML: bodyHTML,
 		// OpenAIPromptTokens / OpenAICompletionTokens intentionally zero.
 	}
+}
+
+// GenerateAndSend generates reminder content, falling back to a static template
+// when the AI call fails, then sends the resulting email via the configured mailer.
+func (s *EmailService) GenerateAndSend(ctx context.Context, p GenerateEmailParams) (GenerateEmailResult, error) {
+	if strings.TrimSpace(p.Invoice.ClientEmail) == "" {
+		return GenerateEmailResult{}, fmt.Errorf("send email: missing client email")
+	}
+
+	result, err := s.GenerateWithAI(ctx, p)
+	if err != nil {
+		s.log.WarnContext(ctx, "openai generation failed, using fallback template",
+			slog.String("reminder_id", p.Reminder.ID.String()),
+			slog.String("error", err.Error()))
+		result = s.FallbackEmail(p)
+	}
+
+	msg := Message{
+		ToName:    firstNameOrName(p.Invoice.ClientContact, p.Invoice.ClientName),
+		ToEmail:   p.Invoice.ClientEmail,
+		Subject:   result.Subject,
+		TextBody:  result.BodyText,
+		HTMLBody:  result.BodyHTML,
+		FromName:  s.fromName,
+		FromEmail: s.fromAddr,
+	}
+	if err := s.mailer.Send(ctx, msg); err != nil {
+		return GenerateEmailResult{}, fmt.Errorf("send email: %w", err)
+	}
+	return result, nil
 }
 
 // injectTracking replaces [PAYMENT_LINK] with a tracked click URL and

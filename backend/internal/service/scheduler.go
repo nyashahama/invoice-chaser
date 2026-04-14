@@ -162,12 +162,13 @@ func (s *SchedulerService) processReminder(ctx context.Context, rem domain.Remin
 		Sequence: domain.SequenceFromDB(seqRow),
 	}
 
-	// Step 3: Generate via OpenAI; fall back to static template on failure.
-	result, err := s.emailSvc.GenerateWithAI(ctx, genParams)
+	// Step 3: Generate and send the email. The EmailService falls back to a
+	// static template when OpenAI is unavailable, but sending failures are fatal.
+	result, err := s.emailSvc.GenerateAndSend(ctx, genParams)
 	if err != nil {
-		log.WarnContext(ctx, "openai generation failed, using fallback template",
-			slog.String("error", err.Error()))
-		result = s.emailSvc.FallbackEmail(genParams)
+		log.ErrorContext(ctx, "failed to generate or send reminder", slog.String("error", err.Error()))
+		s.fail(ctx, locked.ID, rem.InvoiceID, err)
+		return
 	}
 
 	// Step 4: Persist generated content and flip status to "sent".

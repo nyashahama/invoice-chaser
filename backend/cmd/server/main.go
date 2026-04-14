@@ -15,9 +15,9 @@ import (
 
 	db "github.com/nyashahama/invoice-chaser-backend/db/gen"
 	api "github.com/nyashahama/invoice-chaser-backend/internal/api"
-	"github.com/nyashahama/invoice-chaser-backend/internal/api/handler"
 	"github.com/nyashahama/invoice-chaser-backend/internal/config"
 	oai "github.com/nyashahama/invoice-chaser-backend/internal/openai"
+	"github.com/nyashahama/invoice-chaser-backend/internal/payfast"
 	"github.com/nyashahama/invoice-chaser-backend/internal/service"
 )
 
@@ -63,12 +63,23 @@ func main() {
 	// a concrete dependency on the SDK, and tests can inject a fake Completer.
 	var openaiClient oai.Completer = oai.New(cfg.OpenAIAPIKey, "", log) // model="" → GPT-4o
 
+	// ── Email transport ───────────────────────────────────────────────────────
+	mailer := buildMailer(cfg)
+
 	// ── Services ──────────────────────────────────────────────────────────────
 	invoiceSvc := service.NewInvoiceService(queries, log)
 
 	reminderSvc := service.NewReminderService(queries, log)
 
-	emailSvc := service.NewEmailService(openaiClient, cfg.OpenAIMaxTokens, cfg.AppBaseURL, log)
+	emailSvc := service.NewEmailService(
+		openaiClient,
+		mailer,
+		cfg.EmailFromName,
+		cfg.EmailFromAddr,
+		cfg.OpenAIMaxTokens,
+		cfg.AppBaseURL,
+		log,
+	)
 
 	userSvc := service.NewUserService(
 		queries,
@@ -87,15 +98,14 @@ func main() {
 	)
 
 	// ── PayFast verifier ──────────────────────────────────────────────────────
-	// TODO: replace stub with a real implementation once the payfast package
-	// is wired in. The interface is defined in handler.PayFastVerifier.
-	pfVerifier := &stubPayFastVerifier{}
+	pfVerifier := payfast.NewVerifier(nil, log)
 
 	// ── HTTP router ───────────────────────────────────────────────────────────
 	router := api.NewRouter(api.RouterConfig{
 		JWTSecret:         cfg.JWTSecret,
 		AllowedOrigins:    allowedOrigins(cfg),
 		Log:               log,
+		RefreshExpiry:     cfg.RefreshExpiry,
 		Invoices:          invoiceSvc,
 		Reminders:         reminderSvc,
 		Users:             userSvc,
@@ -154,6 +164,15 @@ func main() {
 	}
 
 	log.Info("shutdown complete")
+}
+
+func buildMailer(cfg *config.Config) service.Mailer {
+	switch cfg.EmailDriver {
+	case "smtp":
+		return service.NewSMTPMailer(cfg.SMTPHost, cfg.SMTPPort, cfg.SMTPUsername, cfg.SMTPPassword)
+	default:
+		return service.NewResendMailer(cfg.ResendAPIKey, nil)
+	}
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -220,18 +239,3 @@ func allowedOrigins(cfg *config.Config) []string {
 	}
 	return origins
 }
-
-// ── stub PayFast verifier ────────────────────────────────────────────────────
-
-// stubPayFastVerifier is a placeholder that passes all checks.
-// Replace with a real implementation (e.g. internal/payfast.Verifier) before
-// going to production. All three methods log a warning so it is obvious in
-// logs if real traffic hits this stub.
-type stubPayFastVerifier struct{}
-
-func (s *stubPayFastVerifier) IsAllowedIP(_ string) bool          { return true }
-func (s *stubPayFastVerifier) VerifySignature(_ map[string]string, _ string) bool { return true }
-func (s *stubPayFastVerifier) ValidateWithServer(_ []byte, _ bool) bool            { return true }
-
-// Ensure stubPayFastVerifier satisfies the interface at compile time.
-var _ handler.PayFastVerifier = (*stubPayFastVerifier)(nil)

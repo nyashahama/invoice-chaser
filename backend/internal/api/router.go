@@ -3,6 +3,7 @@ package api
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
@@ -17,6 +18,7 @@ type RouterConfig struct {
 	JWTSecret      string
 	AllowedOrigins []string
 	Log            *slog.Logger
+	RefreshExpiry  time.Duration
 
 	// Services
 	Invoices  *service.InvoiceService
@@ -45,7 +47,7 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	r.Use(chimw.StripSlashes)
 
 	// ── Handler instances ────────────────────────────────────────────────────
-	authH    := handler.NewAuthHandler(cfg.Users)
+	authH    := handler.NewAuthHandler(cfg.Users, cfg.RefreshExpiry)
 	userH    := handler.NewUserHandler(cfg.Users)
 	invoiceH := handler.NewInvoiceHandler(cfg.Invoices, cfg.Reminders)
 	remH     := handler.NewReminderHandler(cfg.Invoices, cfg.Reminders)
