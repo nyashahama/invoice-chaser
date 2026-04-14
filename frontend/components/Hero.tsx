@@ -1,18 +1,24 @@
 "use client";
 
 import React from "react";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
-export default function Hero() {
-  const { isSignedIn, user } = useUser();
+import { useSession } from "@/context/SessionContext";
+
+interface HeroProps {
+  onOpenAuthModal: (mode: "login" | "register") => void;
+}
+
+function getDisplayName(fullName: string, email: string) {
+  return fullName.trim().split(" ")[0] || email.split("@")[0] || "there";
+}
+
+export default function Hero({ onOpenAuthModal }: HeroProps) {
+  const { authenticated, user } = useSession();
   const router = useRouter();
 
-  if (isSignedIn) {
-    const name =
-      user.firstName ??
-      user.emailAddresses[0]?.emailAddress.split("@")[0] ??
-      "there";
+  if (authenticated && user) {
+    const name = getDisplayName(user.full_name, user.email);
 
     return (
       <section className="hero">
@@ -47,13 +53,13 @@ export default function Hero() {
               <div className="invoice-title-bar">autopilot — running</div>
             </div>
             <div className="invoice-body">
-              <div className="inv-row">
-                <span>Account</span>
-                <strong>{user.emailAddresses[0]?.emailAddress}</strong>
-              </div>
-              <div className="inv-total">
-                <span>Status</span>
-                <span style={{ color: "var(--green)", fontSize: "16px" }}>
+            <div className="inv-row">
+              <span>Account</span>
+              <strong>{user.email}</strong>
+            </div>
+            <div className="inv-total">
+              <span>Status</span>
+              <span style={{ color: "var(--green)", fontSize: "16px" }}>
                   ● Active
                 </span>
               </div>
@@ -78,10 +84,14 @@ export default function Hero() {
           instant your client pays. No awkward emails. No forgotten invoices.
         </p>
         <div className="hero-actions">
-          <a href="#cta" className="btn-primary">
+          <button
+            className="btn-primary"
+            onClick={() => onOpenAuthModal("register")}
+            type="button"
+          >
             <span>Start collecting</span>
             <span>→</span>
-          </a>
+          </button>
           <a href="/demo" className="btn-ghost">
             Try live demo ↗
           </a>

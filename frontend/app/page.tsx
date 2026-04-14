@@ -1,5 +1,4 @@
-import Nav from "@/components/Nav";
-import Hero from "@/components/Hero";
+import LandingAuthShell from "@/components/LandingAuthShell";
 import Stats from "@/components/Stats";
 import Ticker from "@/components/Ticker";
 import HowItWorks from "@/components/HowItWorks";
@@ -13,8 +12,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
-      <Nav />
-      <Hero />
+      <LandingAuthShell />
       <Stats />
       <Ticker />
       <HowItWorks />

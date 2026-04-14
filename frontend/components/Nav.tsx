@@ -1,11 +1,17 @@
 "use client";
 
 import React from "react";
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
-export default function Nav() {
-  const { isSignedIn } = useUser();
-  const { signOut } = useClerk();
+import { useSession } from "@/context/SessionContext";
+
+interface NavProps {
+  onOpenAuthModal: (mode: "login" | "register") => void;
+}
+
+export default function Nav({ onOpenAuthModal }: NavProps) {
+  const router = useRouter();
+  const { authenticated, logout } = useSession();
 
   return (
     <nav>
@@ -13,7 +19,7 @@ export default function Nav() {
         Invoice<span>Chaser</span>
       </div>
       <ul className="nav-links">
-        {!isSignedIn && (
+        {!authenticated && (
           <>
             <li>
               <a href="#how">How it works</a>
@@ -21,12 +27,30 @@ export default function Nav() {
             <li>
               <a href="#pricing">Pricing</a>
             </li>
+            <li>
+              <button
+                className="nav-auth"
+                onClick={() => onOpenAuthModal("login")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-dim)",
+                  cursor: "pointer",
+                  fontFamily: "var(--mono)",
+                  fontSize: "12px",
+                  padding: 0,
+                }}
+                type="button"
+              >
+                Sign in
+              </button>
+            </li>
           </>
         )}
         <li>
           <a href="/demo">Live demo ↗</a>
         </li>
-        {isSignedIn ? (
+        {authenticated ? (
           <>
             <li>
               <a href="/dashboard" className="nav-cta">
@@ -35,7 +59,10 @@ export default function Nav() {
             </li>
             <li>
               <button
-                onClick={() => signOut({ redirectUrl: "/" })}
+                onClick={() => {
+                  void logout();
+                  router.push("/");
+                }}
                 style={{
                   background: "none",
                   border: "none",
@@ -44,6 +71,7 @@ export default function Nav() {
                   fontFamily: "var(--mono)",
                   fontSize: "12px",
                 }}
+                type="button"
               >
                 Sign out
               </button>
@@ -51,9 +79,13 @@ export default function Nav() {
           </>
         ) : (
           <li>
-            <a href="#cta" className="nav-cta">
-              Get early access
-            </a>
+            <button
+              className="nav-cta"
+              onClick={() => onOpenAuthModal("register")}
+              type="button"
+            >
+              Create account →
+            </button>
           </li>
         )}
       </ul>

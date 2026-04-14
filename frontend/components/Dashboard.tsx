@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useUser, useClerk } from "@clerk/nextjs";
+import React, { useState, useCallback, useRef } from "react";
+
+import { useSession } from "@/context/SessionContext";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
 interface User {
   email: string;
   name: string;
-  plan: "trial" | "solo" | "pro" | "team";
+  plan: string;
   trialEndsAt: string;
 }
 
@@ -457,29 +457,27 @@ function StatCard({
   );
 }
 
+function getTrialEndsAt(createdAt: string) {
+  const trialEnd = new Date(createdAt);
+  trialEnd.setDate(trialEnd.getDate() + 14);
+  return trialEnd.toISOString();
+}
+
 // ─── MAIN DASHBOARD ───────────────────────────────────────────────────────────
 
 export default function Dashboard() {
-  const { user: clerkUser, isLoaded } = useUser();
-  const { signOut } = useClerk();
-  const loading = !isLoaded;
-  const user = clerkUser
+  const { loading, logout, user: sessionUser } = useSession();
+  const user = sessionUser
     ? {
-        email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+        email: sessionUser.email,
         name:
-          clerkUser.firstName ??
-          clerkUser.emailAddresses[0]?.emailAddress.split("@")[0] ??
+          sessionUser.full_name.trim().split(" ")[0] ??
+          sessionUser.email.split("@")[0] ??
           "User",
-        plan: "trial" as const,
-        trialEndsAt: new Date(Date.now() + 14 * 86400000).toISOString(),
+        plan: sessionUser.plan,
+        trialEndsAt: getTrialEndsAt(sessionUser.created_at),
       }
     : null;
-  const router = useRouter();
-
-  // Auth guard
-  useEffect(() => {
-    if (!loading && !user) router.replace("/");
-  }, [user, loading, router]);
 
   // ── State ──
   const [invoices, setInvoices] = useState<Invoice[]>(SEED_INVOICES);
@@ -779,7 +777,9 @@ export default function Dashboard() {
             {user.email}
           </div>
           <button
-            onClick={() => signOut({ redirectUrl: "/" })}
+            onClick={() => {
+              void logout();
+            }}
             style={{
               fontFamily: "var(--mono)",
               fontSize: "11px",
@@ -792,6 +792,7 @@ export default function Dashboard() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
             }}
+            type="button"
           >
             Sign out
           </button>
