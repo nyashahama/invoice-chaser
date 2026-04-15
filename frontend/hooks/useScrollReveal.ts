@@ -18,14 +18,14 @@ interface UseScrollRevealOptions {
  *
  * @example
  * const ref = useScrollReveal({ staggerSelector: '.feature-card' });
- * <div ref={ref} className="features-grid reveal"> ... </div>
+ * <div ref={ref} className="... reveal"> ... </div>
  */
 export function useScrollReveal<T extends HTMLElement = HTMLElement>(
   options: UseScrollRevealOptions = {},
 ) {
   const {
     threshold = 0.15,
-    staggerSelector = ".step, .feature-card, .testimonial, .price-card",
+    staggerSelector,
     staggerDelay = 100,
   } = options;
 
