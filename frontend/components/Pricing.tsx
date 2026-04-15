@@ -9,14 +9,14 @@ export default function Pricing() {
   });
 
   return (
-    <section className="py-[120px] px-12 max-w-[1200px] mx-auto md:py-20 md:px-6" id="pricing">
+    <section className="py-20 px-6 max-w-[1200px] mx-auto md:py-[120px] md:px-12" id="pricing">
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green mb-4 flex items-center gap-2.5 after:content-[''] after:flex-1 after:h-px after:bg-border-default">
         Pricing
       </div>
-      <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-tight tracking-tight mb-[72px] max-w-[600px]">
+      <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-[72px] max-w-[600px]">
         Pays for itself on the <em className="font-serif italic font-normal text-text-dim">first invoice.</em>
       </h2>
-      <div ref={ref} className="grid grid-cols-3 gap-px bg-border-default border border-border-default mt-[60px] md:grid-cols-1 reveal">
+      <div ref={ref} className="grid grid-cols-1 gap-px bg-border-default border border-border-default mt-[60px] md:grid-cols-3 reveal">
         <div className="price-card bg-black py-12 px-9 relative transition-colors hover:bg-surface duration-300">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Starter</span>
           <div className="text-[22px] font-extrabold mb-5">Solo</div>

@@ -14,7 +14,7 @@ export default function Nav({ onOpenAuthModal }: NavProps) {
   const { authenticated, logout } = useSession();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-5 border-b border-border-default bg-black/90 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-12 md:py-5 border-b border-border-default bg-black/90 backdrop-blur-md">
       <div className="font-mono text-[13px] font-bold tracking-[0.08em] text-green uppercase">
         Invoice<span className="text-text-dim">Chaser</span>
       </div>

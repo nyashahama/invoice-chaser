@@ -57,20 +57,20 @@ export default function CTA() {
   };
 
   return (
-    <div className="bg-surface border-t border-border-default pt-[140px] pb-[140px] px-12 text-center relative overflow-hidden md:py-20 md:px-6" id="cta">
+    <div className="bg-surface border-t border-border-default py-20 px-6 text-center relative overflow-hidden md:pt-[140px] md:pb-[140px] md:px-12" id="cta">
       <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.08)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green flex items-center justify-center gap-2.5 mb-6">
         <span>Early access</span>
       </div>
 
-      <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-tight tracking-tight mb-6">
+      <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-6">
         Get paid.
         <br />
         <span className="text-green">On autopilot.</span>
       </h2>
 
-      <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mx-auto mb-8 font-normal">
+      <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-[1.65] max-w-[480px] mx-auto mb-8 font-normal">
         Create an account to use the product now, or join the launch list if
         you only want rollout updates.
       </p>
@@ -112,7 +112,7 @@ export default function CTA() {
             </Link>
           </div>
 
-          <div className="flex gap-3 justify-center max-w-[480px] mx-auto md:flex-col">
+          <div className="flex flex-col gap-3 justify-center max-w-[480px] mx-auto md:flex-row">
             <input
               ref={inputRef}
               type="email"

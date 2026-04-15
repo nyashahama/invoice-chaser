@@ -99,15 +99,15 @@ export default function ToneSelector() {
 
   return (
     <div
-      className="bg-surface border-t border-b border-border-default py-[100px] px-12 md:py-[60px] md:px-6"
+      className="bg-surface border-t border-b border-border-default py-[60px] px-6 md:py-[100px] md:px-12"
       id="tone"
     >
-      <div className="max-w-[1200px] mx-auto grid grid-cols-2 gap-20 items-center md:grid-cols-1">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-10 items-center md:grid-cols-2 md:gap-20">
         <div>
           <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green mb-4 flex items-center gap-2.5 after:content-[''] after:flex-1 after:h-px after:bg-border-default">
             Tone control
           </div>
-          <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-tight tracking-tight mb-8">
+          <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-8">
             Your voice.
             <br />
             <em className="font-serif italic font-normal text-text-dim">Automated.</em>
@@ -136,7 +136,7 @@ export default function ToneSelector() {
                     {tone === "final" && "Day 22+"}
                   </span>
                 </div>
-                <div className="font-mono text-[11px] text-text-dim leading-relaxed">
+                <div className="font-mono text-[11px] text-text-dim leading-[1.65]">
                   {tone === "polite" &&
                     "Warm, professional. Assumes the best. Great for long-term client relationships."}
                   {tone === "firm" &&
