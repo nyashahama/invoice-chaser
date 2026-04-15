@@ -17,7 +17,7 @@ export default function Pricing() {
         Pays for itself on the <em className="font-serif italic font-normal text-text-dim">first invoice.</em>
       </h2>
       <div ref={ref} className="grid grid-cols-1 gap-px bg-border-default border border-border-default mt-[60px] md:grid-cols-3 reveal">
-        <div className="price-card bg-black py-12 px-9 relative transition-colors hover:bg-surface duration-300">
+        <div className="price-card bg-black py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Starter</span>
           <div className="text-[22px] font-extrabold mb-5">Solo</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">
@@ -35,7 +35,7 @@ export default function Pricing() {
             Get started →
           </a>
         </div>
-        <div className={`price-card bg-surface py-12 px-9 relative transition-colors hover:bg-surface duration-300 outline outline-1 outline-green outline-offset-[-1px]`}>
+        <div className={`price-card bg-surface py-12 px-9 relative transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ring-2 ring-green`}>
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Most popular</span>
           <div className="text-[22px] font-extrabold mb-5">Pro</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">
@@ -57,7 +57,7 @@ export default function Pricing() {
             Start free trial →
           </a>
         </div>
-        <div className="price-card bg-black py-12 px-9 relative transition-colors hover:bg-surface duration-300">
+        <div className="price-card bg-black py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Agency</span>
           <div className="text-[22px] font-extrabold mb-5">Team</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">

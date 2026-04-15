@@ -17,7 +17,7 @@ export default function Testimonials() {
         Freelancers sleep better <em className="font-serif italic font-normal text-text-dim">now.</em>
       </h2>
       <div ref={ref} className="grid grid-cols-1 gap-6 mt-[60px] md:grid-cols-3 reveal">
-        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-colors hover:border-border-light">
+        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-all duration-300 hover:border-border-light hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
           <div className="text-amber text-xs mb-4 tracking-[2px]">★★★★★</div>
           <div className="font-serif italic text-[17px] leading-[1.65] text-text mb-6">
             &ldquo;I had a $6k invoice that sat unpaid for 8 weeks. Three days
@@ -28,7 +28,7 @@ export default function Testimonials() {
             Brand designer, freelance
           </div>
         </div>
-        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-colors hover:border-border-light">
+        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-all duration-300 hover:border-border-light hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
           <div className="text-amber text-xs mb-4 tracking-[2px]">★★★★★</div>
           <div className="font-serif italic text-[17px] leading-[1.65] text-text mb-6">
             &ldquo;The awkward email thing is real. I&apos;d rather do extra
@@ -39,7 +39,7 @@ export default function Testimonials() {
             Copywriter &amp; content strategist
           </div>
         </div>
-        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-colors hover:border-border-light">
+        <div className="testimonial border border-border-default py-8 px-8 rounded-[2px] relative transition-all duration-300 hover:border-border-light hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
           <div className="text-amber text-xs mb-4 tracking-[2px]">★★★★★</div>
           <div className="font-serif italic text-[17px] leading-[1.65] text-text mb-6">
             &ldquo;Our agency recovered $40k in outstanding invoices in the
