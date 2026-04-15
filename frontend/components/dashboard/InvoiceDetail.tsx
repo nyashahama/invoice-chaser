@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 import type {
@@ -30,6 +29,10 @@ interface InvoiceDetailProps {
   sequence: ReminderSequence | null;
   sequenceLoading: boolean;
 }
+
+const FIELD = "bg-white/[0.03] border border-border-default rounded-md text-text px-3.5 py-3 w-full";
+const BTN_PRIMARY = "inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer";
+const BTN_GHOST = "inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase hover:text-text transition-colors py-4 bg-transparent border-none cursor-pointer";
 
 export default function InvoiceDetail({
   events,
@@ -71,17 +74,9 @@ export default function InvoiceDetail({
 
   if (!invoice) {
     return (
-      <section
-        style={{
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid var(--border)",
-          borderRadius: "8px",
-          minHeight: "320px",
-          padding: "20px",
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Invoice detail</h2>
-        <p style={{ color: "var(--text-dim)" }}>
+      <section className="min-h-[320px] rounded-lg border border-border-default bg-white/[0.02] p-5">
+        <h2 className="mt-0">Invoice detail</h2>
+        <p className="text-text-dim">
           Select an invoice to inspect its reminder sequence, delivery events,
           and payment state.
         </p>
@@ -133,51 +128,28 @@ export default function InvoiceDetail({
   }
 
   return (
-    <section
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        display: "grid",
-        gap: "20px",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          alignItems: "flex-start",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "16px",
-          justifyContent: "space-between",
-        }}
-      >
+    <section className="grid gap-5 rounded-lg border border-border-default bg-white/[0.02] p-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 style={{ margin: 0 }}>{invoice.client_name}</h2>
-          <p style={{ color: "var(--text-dim)", margin: "8px 0 0" }}>
+          <h2 className="m-0">{invoice.client_name}</h2>
+          <p className="mt-2 text-text-dim">
             {invoice.invoice_number} · {formatCurrency(invoice.amount_cents)}
           </p>
         </div>
         {invoice.status !== "paid" ? (
           <button
-            className="btn-primary"
+            className={BTN_PRIMARY}
             disabled={markingPaid}
             onClick={() => void handleMarkPaid()}
             type="button"
           >
-            <span>{markingPaid ? "Updating..." : "Mark paid"}</span>
+            <span>{markingPaid ? "Updating..." : "Mark pay"}</span>
             <span>✓</span>
           </button>
         ) : null}
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gap: "10px",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-        }}
-      >
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-2.5">
         <Meta label="Client email" value={invoice.client_email} />
         <Meta label="Client contact" value={invoice.client_contact || "Not set"} />
         <Meta label="Due date" value={formatDate(invoice.due_date)} />
@@ -192,22 +164,10 @@ export default function InvoiceDetail({
         />
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gap: "20px",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-        }}
-      >
-        <section
-          style={{
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            padding: "16px",
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>Reminder sequence</h3>
-          <p style={{ color: "var(--text-dim)" }}>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5">
+        <section className="rounded-lg border border-border-default p-4">
+          <h3 className="mt-0">Reminder sequence</h3>
+          <p className="text-text-dim">
             {sequence
               ? "Update the active reminder cadence for this invoice."
               : canManageSequence
@@ -215,13 +175,13 @@ export default function InvoiceDetail({
                 : "Draft invoices need to be created with a sequence in one step under the current backend contract."}
           </p>
 
-          <label style={{ display: "grid", gap: "8px", marginBottom: "12px" }}>
-            <span style={{ color: "var(--text-dim)" }}>Tone</span>
+          <label className="mb-3 grid gap-2">
+            <span className="text-text-dim">Tone</span>
             <select
               onChange={(event) =>
                 setSequenceTone(event.target.value as InvoiceTone)
               }
-              style={fieldStyle}
+              className={FIELD}
               value={sequenceTone}
             >
               <option value="polite">polite</option>
@@ -230,28 +190,27 @@ export default function InvoiceDetail({
             </select>
           </label>
 
-          <label style={{ display: "grid", gap: "8px" }}>
-            <span style={{ color: "var(--text-dim)" }}>
+          <label className="grid gap-2">
+            <span className="text-text-dim">
               Intervals after due date
             </span>
             <input
               onChange={(event) => setIntervalText(event.target.value)}
-              style={fieldStyle}
+              className={FIELD}
               value={intervalText}
             />
           </label>
 
           {sequenceError ? (
-            <p style={{ color: "var(--red)", marginBottom: 0 }}>
+            <p className="mb-0 text-red">
               {sequenceError}
             </p>
           ) : null}
 
           <button
-            className="btn-primary"
+            className={`${BTN_PRIMARY} mt-3.5`}
             disabled={!canManageSequence || sequenceLoading || sequenceSubmitting}
             onClick={() => void handleSequenceSubmit()}
-            style={{ marginTop: "14px" }}
             type="button"
           >
             <span>
@@ -264,47 +223,36 @@ export default function InvoiceDetail({
             <span>→</span>
           </button>
 
-          <div style={{ display: "grid", gap: "10px", marginTop: "18px" }}>
+          <div className="mt-[18px] grid gap-2.5">
             {sequenceLoading ? (
-              <p style={{ color: "var(--text-dim)", margin: 0 }}>
+              <p className="m-0 text-text-dim">
                 Loading sequence...
               </p>
             ) : sequence?.reminders.length ? (
               sequence.reminders.map((reminder) => (
                 <div
                   key={reminder.id}
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "6px",
-                    padding: "12px",
-                  }}
+                  className="rounded-md border border-border-default bg-white/[0.02] p-3"
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "8px",
-                    }}
-                  >
+                  <div className="mb-2 flex justify-between">
                     <strong>Reminder {reminder.sequence_position}</strong>
-                    <span style={{ color: "var(--text-dim)" }}>
+                    <span className="text-text-dim">
                       {reminder.status}
                     </span>
                   </div>
-                  <p style={{ color: "var(--text-dim)", margin: "0 0 12px" }}>
+                  <p className="mb-3 text-text-dim">
                     Scheduled {formatDate(reminder.scheduled_for)}
                   </p>
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  <div className="flex flex-wrap gap-2.5">
                     <button
-                      className="btn-ghost"
+                      className={BTN_GHOST}
                       onClick={() => void onSendNow(reminder.id)}
                       type="button"
                     >
                       Send now
                     </button>
                     <button
-                      className="btn-ghost"
+                      className={BTN_GHOST}
                       onClick={() => void onRegenerate(reminder.id)}
                       type="button"
                     >
@@ -314,68 +262,44 @@ export default function InvoiceDetail({
                 </div>
               ))
             ) : (
-              <p style={{ color: "var(--text-dim)", margin: 0 }}>
+              <p className="m-0 text-text-dim">
                 No reminders scheduled yet.
               </p>
             )}
           </div>
         </section>
 
-        <section
-          style={{
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            padding: "16px",
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>Event log</h3>
-          <p style={{ color: "var(--text-dim)" }}>
+        <section className="rounded-lg border border-border-default p-4">
+          <h3 className="mt-0">Event log</h3>
+          <p className="text-text-dim">
             Delivery and tracking events from the backend audit log.
           </p>
 
           {eventsLoading ? (
-            <p style={{ color: "var(--text-dim)", margin: 0 }}>
+            <p className="m-0 text-text-dim">
               Loading events...
             </p>
           ) : events.length ? (
-            <div style={{ display: "grid", gap: "10px" }}>
+            <div className="grid gap-2.5">
               {events.map((event) => (
                 <div
                   key={event.id}
-                  style={{
-                    borderBottom: "1px solid var(--border)",
-                    paddingBottom: "10px",
-                  }}
+                  className="border-b border-border-default pb-2.5"
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "6px",
-                    }}
-                  >
+                  <div className="mb-1.5 flex justify-between">
                     <strong>{event.event_type}</strong>
-                    <span style={{ color: "var(--text-dim)", fontSize: "12px" }}>
+                    <span className="text-xs text-text-dim">
                       {formatDate(event.occurred_at)}
                     </span>
                   </div>
-                  <pre
-                    style={{
-                      color: "var(--text-dim)",
-                      fontFamily: "var(--mono)",
-                      fontSize: "12px",
-                      margin: 0,
-                      overflowX: "auto",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
+                  <pre className="m-0 overflow-x-auto whitespace-pre-wrap font-mono text-xs text-text-dim">
                     {JSON.stringify(event.metadata ?? {}, null, 2)}
                   </pre>
                 </div>
               ))}
             </div>
           ) : (
-            <p style={{ color: "var(--text-dim)", margin: 0 }}>
+            <p className="m-0 text-text-dim">
               No reminder events recorded yet.
             </p>
           )}
@@ -387,35 +311,11 @@ export default function InvoiceDetail({
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        padding: "14px",
-      }}
-    >
-      <div
-        style={{
-          color: "var(--text-dim)",
-          fontFamily: "var(--mono)",
-          fontSize: "11px",
-          marginBottom: "8px",
-          textTransform: "uppercase",
-        }}
-      >
+    <div className="rounded-lg border border-border-default bg-white/[0.02] p-3.5">
+      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.1em] text-text-dim">
         {label}
       </div>
       <div>{value}</div>
     </div>
   );
 }
-
-const fieldStyle = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid var(--border)",
-  borderRadius: "6px",
-  color: "var(--text)",
-  padding: "12px 14px",
-  width: "100%",
-} satisfies CSSProperties;

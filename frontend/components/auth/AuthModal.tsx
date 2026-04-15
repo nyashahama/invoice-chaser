@@ -98,91 +98,31 @@ export default function AuthModal({
     <div
       aria-modal="true"
       role="dialog"
-      style={{
-        alignItems: "center",
-        backdropFilter: "blur(10px)",
-        background: "rgba(10, 10, 10, 0.72)",
-        display: "flex",
-        inset: 0,
-        justifyContent: "center",
-        padding: "24px",
-        position: "fixed",
-        zIndex: 1000,
-      }}
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-[rgba(10,10,10,0.72)] backdrop-blur-[10px] p-6"
     >
-      <div
-        style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "8px",
-          boxShadow: "0 24px 80px rgba(0, 0, 0, 0.45)",
-          maxWidth: "440px",
-          padding: "28px",
-          position: "relative",
-          width: "100%",
-        }}
-      >
+      <div className="w-full max-w-[440px] rounded-lg border border-border-default bg-surface p-7 relative shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
         <button
           aria-label="Close authentication modal"
           onClick={onClose}
-          style={{
-            background: "none",
-            border: "none",
-            color: "var(--text-dim)",
-            cursor: "pointer",
-            fontSize: "24px",
-            lineHeight: 1,
-            position: "absolute",
-            right: "18px",
-            top: "14px",
-          }}
+          className="absolute right-[18px] top-3.5 cursor-pointer border-none bg-transparent text-text-dim text-2xl leading-none"
           type="button"
         >
           ×
         </button>
 
-        <div
-          style={{
-            color: "var(--text-dim)",
-            fontFamily: "var(--mono)",
-            fontSize: "11px",
-            letterSpacing: "0.12em",
-            marginBottom: "12px",
-            textTransform: "uppercase",
-          }}
-        >
+        <div className="mb-3 font-mono text-[11px] tracking-[0.12em] uppercase text-text-dim">
           Backend session auth
         </div>
-        <h2
-          style={{
-            color: "var(--text)",
-            fontSize: "32px",
-            lineHeight: 1,
-            margin: "0 0 12px",
-          }}
-        >
+        <h2 className="m-0 mb-3 text-[32px] leading-none text-text">
           {mode === "login" ? "Welcome back" : "Create your account"}
         </h2>
-        <p
-          style={{
-            color: "var(--text-dim)",
-            lineHeight: 1.6,
-            margin: "0 0 24px",
-          }}
-        >
+        <p className="mb-6 leading-[1.6] text-text-dim">
           {mode === "login"
             ? "Sign in with your email and password to resume your collections."
             : "Start with a backend-backed session. Your refresh token stays in a cookie; the access token stays client-side."}
         </p>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "8px",
-            gridTemplateColumns: "1fr 1fr",
-            marginBottom: "20px",
-          }}
-        >
+        <div className="mb-5 grid grid-cols-2 gap-2">
           {(["login", "register"] as const).map((nextMode) => (
             <button
               key={nextMode}
@@ -193,20 +133,7 @@ export default function AuthModal({
                   error: null,
                 }));
               }}
-              style={{
-                background:
-                  nextMode === mode ? "var(--text)" : "transparent",
-                border: "1px solid var(--border)",
-                borderRadius: "999px",
-                color:
-                  nextMode === mode ? "var(--bg)" : "var(--text-dim)",
-                cursor: "pointer",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.1em",
-                padding: "10px 12px",
-                textTransform: "uppercase",
-              }}
+              className={`${nextMode === mode ? "bg-text text-black" : "bg-transparent text-text-dim"} cursor-pointer rounded-full border border-border-default px-3 py-2.5 font-mono text-[11px] uppercase tracking-[0.1em]`}
               type="button"
             >
               {nextMode === "login" ? "Sign in" : "Register"}
@@ -214,18 +141,10 @@ export default function AuthModal({
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: "14px" }}>
+        <form onSubmit={handleSubmit} className="grid gap-3.5">
           {mode === "register" ? (
-            <label style={{ display: "grid", gap: "8px" }}>
-              <span
-                style={{
-                  color: "var(--text-dim)",
-                  fontFamily: "var(--mono)",
-                  fontSize: "11px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                }}
-              >
+            <label className="grid gap-2">
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-dim">
                 Full name
               </span>
               <input
@@ -237,30 +156,15 @@ export default function AuthModal({
                   }))
                 }
                 required
-                style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "4px",
-                  color: "var(--text)",
-                  fontSize: "16px",
-                  padding: "14px 16px",
-                }}
+                className="rounded border border-border-default bg-white/[0.02] px-4 py-3.5 text-base text-text"
                 type="text"
                 value={fullName}
               />
             </label>
           ) : null}
 
-          <label style={{ display: "grid", gap: "8px" }}>
-            <span
-              style={{
-                color: "var(--text-dim)",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-            >
+          <label className="grid gap-2">
+            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-dim">
               Email
             </span>
             <input
@@ -272,29 +176,14 @@ export default function AuthModal({
                 }))
               }
               required
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid var(--border)",
-                borderRadius: "4px",
-                color: "var(--text)",
-                fontSize: "16px",
-                padding: "14px 16px",
-              }}
+              className="rounded border border-border-default bg-white/[0.02] px-4 py-3.5 text-base text-text"
               type="email"
               value={email}
             />
           </label>
 
-          <label style={{ display: "grid", gap: "8px" }}>
-            <span
-              style={{
-                color: "var(--text-dim)",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-            >
+          <label className="grid gap-2">
+            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-dim">
               Password
             </span>
             <input
@@ -309,52 +198,21 @@ export default function AuthModal({
                 }))
               }
               required
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid var(--border)",
-                borderRadius: "4px",
-                color: "var(--text)",
-                fontSize: "16px",
-                padding: "14px 16px",
-              }}
+              className="rounded border border-border-default bg-white/[0.02] px-4 py-3.5 text-base text-text"
               type="password"
               value={password}
             />
           </label>
 
           {error ? (
-            <div
-              style={{
-                border: "1px solid rgba(255, 61, 61, 0.25)",
-                borderRadius: "4px",
-                color: "#ff9b9b",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.06em",
-                padding: "12px 14px",
-                textTransform: "uppercase",
-              }}
-            >
+            <div className="rounded border border-[rgba(255,61,61,0.25)] px-3.5 py-3 font-mono text-[11px] uppercase tracking-[0.06em] text-[#ff9b9b]">
               {error}
             </div>
           ) : null}
 
           <button
             disabled={submitting}
-            style={{
-              background: "var(--text)",
-              border: "none",
-              borderRadius: "999px",
-              color: "var(--bg)",
-              cursor: submitting ? "progress" : "pointer",
-              fontFamily: "var(--mono)",
-              fontSize: "12px",
-              letterSpacing: "0.12em",
-              marginTop: "6px",
-              opacity: submitting ? 0.8 : 1,
-              padding: "14px 18px",
-              textTransform: "uppercase",
-            }}
+            className="mt-1.5 rounded-full border-none bg-text px-[18px] py-[14px] font-mono text-xs uppercase tracking-[0.12em] text-black disabled:cursor-progress disabled:opacity-80"
             type="submit"
           >
             {submitting

@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 
 import type { ApiInvoice, CreateInvoiceInput, InvoiceTone } from "@/lib/api/types";
@@ -28,6 +27,10 @@ const initialValues: InvoiceFormValues = {
   startSequence: true,
   tone: "polite",
 };
+
+const FIELD = "bg-white/[0.03] border border-border-default rounded-md text-text px-3.5 py-3 w-full";
+const BTN_PRIMARY = "inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer";
+const BTN_GHOST = "inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase hover:text-text transition-colors py-4 bg-transparent border-none cursor-pointer";
 
 export default function NewInvoiceForm({
   onCancel,
@@ -74,41 +77,23 @@ export default function NewInvoiceForm({
   const toneOptions: InvoiceTone[] = ["polite", "firm", "final"];
 
   return (
-    <section
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "16px",
-        }}
-      >
+    <section className="rounded-lg border border-border-default bg-white/[0.02] p-5">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 style={{ fontSize: "20px", margin: 0 }}>Create invoice</h2>
-          <p style={{ color: "var(--text-dim)", margin: "8px 0 0" }}>
+          <h2 className="m-0 text-xl">Create invoice</h2>
+          <p className="mt-2 text-text-dim">
             Create the invoice and optionally activate the reminder sequence in
             one backend request.
           </p>
         </div>
-        <button className="btn-ghost" onClick={onCancel} type="button">
+        <button className={BTN_GHOST} onClick={onCancel} type="button">
           Cancel
         </button>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        style={{
-          display: "grid",
-          gap: "14px",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        }}
+        className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5"
       >
         <Input
           label="Invoice number"
@@ -161,22 +146,8 @@ export default function NewInvoiceForm({
           value={values.notes}
         />
 
-        <div
-          style={{
-            border: "1px solid var(--border)",
-            borderRadius: "6px",
-            gridColumn: "1 / -1",
-            padding: "14px",
-          }}
-        >
-          <label
-            style={{
-              alignItems: "center",
-              display: "flex",
-              gap: "10px",
-              marginBottom: "12px",
-            }}
-          >
+        <div className="col-span-[1_/_-1] rounded-md border border-border-default p-3.5">
+          <label className="mb-3 flex items-center gap-2.5">
             <input
               checked={values.startSequence}
               onChange={(event) =>
@@ -187,30 +158,13 @@ export default function NewInvoiceForm({
             <span>Start reminder sequence immediately</span>
           </label>
 
-          <div
-            style={{
-              alignItems: "center",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
+          <div className="flex flex-wrap items-center gap-2.5">
             {toneOptions.map((tone) => (
               <button
                 key={tone}
                 disabled={!values.startSequence}
                 onClick={() => updateField("tone", tone)}
-                style={{
-                  background:
-                    tone === values.tone ? "var(--green)" : "transparent",
-                  border: "1px solid var(--border)",
-                  borderRadius: "999px",
-                  color: tone === values.tone ? "var(--bg)" : "var(--text)",
-                  cursor: "pointer",
-                  opacity: values.startSequence ? 1 : 0.4,
-                  padding: "8px 12px",
-                  textTransform: "capitalize",
-                }}
+                className={`${tone === values.tone ? "bg-green text-black" : "bg-transparent text-text"} border border-border-default rounded-full cursor-pointer px-3 py-2 uppercase ${values.startSequence ? "opacity-100" : "opacity-40"}`}
                 type="button"
               >
                 {tone}
@@ -219,12 +173,7 @@ export default function NewInvoiceForm({
           </div>
 
           {values.startSequence ? (
-            <p
-              style={{
-                color: "var(--text-dim)",
-                margin: "12px 0 0",
-              }}
-            >
+            <p className="mt-3 text-text-dim">
               Reminder intervals for <strong>{values.tone}</strong>:{" "}
               {sequenceSummary} days after due date.
             </p>
@@ -232,23 +181,16 @@ export default function NewInvoiceForm({
         </div>
 
         {error ? (
-          <p style={{ color: "var(--red)", gridColumn: "1 / -1", margin: 0 }}>
+          <p className="col-span-[1_/_-1] m-0 text-red">
             {error}
           </p>
         ) : null}
 
-        <div
-          style={{
-            display: "flex",
-            gap: "12px",
-            gridColumn: "1 / -1",
-            justifyContent: "flex-end",
-          }}
-        >
-          <button className="btn-ghost" onClick={onCancel} type="button">
+        <div className="col-span-[1_/_-1] flex items-center justify-end gap-3">
+          <button className={BTN_GHOST} onClick={onCancel} type="button">
             Cancel
           </button>
-          <button className="btn-primary" disabled={submitting} type="submit">
+          <button className={BTN_PRIMARY} disabled={submitting} type="submit">
             <span>{submitting ? "Creating..." : "Create invoice"}</span>
             <span>→</span>
           </button>
@@ -276,13 +218,13 @@ function Input({
   value,
 }: InputProps) {
   return (
-    <label style={{ display: "grid", gap: "8px" }}>
-      <span style={{ color: "var(--text-dim)", fontSize: "14px" }}>{label}</span>
+    <label className="grid gap-2">
+      <span className="text-sm text-text-dim">{label}</span>
       <input
         onChange={(event) => onChange(event.target.value)}
         required={required}
         step={step}
-        style={fieldStyle}
+        className={FIELD}
         type={type}
         value={value}
       />
@@ -300,29 +242,14 @@ function TextArea({
   value: string;
 }) {
   return (
-    <label
-      style={{
-        display: "grid",
-        gap: "8px",
-        gridColumn: "1 / -1",
-      }}
-    >
-      <span style={{ color: "var(--text-dim)", fontSize: "14px" }}>{label}</span>
+    <label className="col-span-[1_/_-1] grid gap-2">
+      <span className="text-sm text-text-dim">{label}</span>
       <textarea
         onChange={(event) => onChange(event.target.value)}
         rows={3}
-        style={fieldStyle}
+        className={FIELD}
         value={value}
       />
     </label>
   );
 }
-
-const fieldStyle = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid var(--border)",
-  borderRadius: "6px",
-  color: "var(--text)",
-  padding: "12px 14px",
-  width: "100%",
-} satisfies CSSProperties;

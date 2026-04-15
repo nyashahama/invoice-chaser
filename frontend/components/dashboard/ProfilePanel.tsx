@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 
 import type { ApiUser, ChangePasswordInput, UpdateUserInput } from "@/lib/api/types";
@@ -10,6 +9,9 @@ interface ProfilePanelProps {
   onSaveProfile: (input: UpdateUserInput) => Promise<void>;
   user: ApiUser;
 }
+
+const FIELD = "bg-white/[0.03] border border-border-default rounded-md text-text px-3.5 py-3 w-full";
+const BTN_PRIMARY = "inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer";
 
 export default function ProfilePanel({
   onChangePassword,
@@ -73,102 +75,77 @@ export default function ProfilePanel({
   }
 
   return (
-    <section
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        display: "grid",
-        gap: "18px",
-        padding: "20px",
-      }}
-    >
+    <section className="grid gap-[18px] rounded-lg border border-border-default bg-white/[0.02] p-5">
       <div>
-        <h2 style={{ marginTop: 0 }}>Profile</h2>
-        <p style={{ color: "var(--text-dim)", margin: "8px 0 0" }}>
+        <h2 className="mt-0">Profile</h2>
+        <p className="mt-2 text-text-dim">
           Keep your account details accurate for reminder generation and
           reporting.
         </p>
       </div>
 
-      <form onSubmit={handleProfileSave} style={{ display: "grid", gap: "12px" }}>
-        <label style={{ display: "grid", gap: "8px" }}>
-          <span style={{ color: "var(--text-dim)" }}>Full name</span>
+      <form onSubmit={handleProfileSave} className="grid gap-3">
+        <label className="grid gap-2">
+          <span className="text-text-dim">Full name</span>
           <input
             onChange={(event) => setFullName(event.target.value)}
-            style={fieldStyle}
+            className={FIELD}
             value={fullName}
           />
         </label>
 
-        <label style={{ display: "grid", gap: "8px" }}>
-          <span style={{ color: "var(--text-dim)" }}>Timezone</span>
+        <label className="grid gap-2">
+          <span className="text-text-dim">Timezone</span>
           <input
             onChange={(event) => setTimezone(event.target.value)}
-            style={fieldStyle}
+            className={FIELD}
             value={timezone}
           />
         </label>
 
-        <div
-          style={{
-            alignItems: "center",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "12px",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {profileMessage ? (
-            <span style={{ color: "var(--text-dim)" }}>{profileMessage}</span>
+            <span className="text-text-dim">{profileMessage}</span>
           ) : (
-            <span style={{ color: "var(--text-dim)" }}>{user.email}</span>
+            <span className="text-text-dim">{user.email}</span>
           )}
-          <button className="btn-primary" disabled={savingProfile} type="submit">
+          <button className={BTN_PRIMARY} disabled={savingProfile} type="submit">
             <span>{savingProfile ? "Saving..." : "Save profile"}</span>
             <span>→</span>
           </button>
         </div>
       </form>
 
-      <form onSubmit={handlePasswordSave} style={{ display: "grid", gap: "12px" }}>
-        <label style={{ display: "grid", gap: "8px" }}>
-          <span style={{ color: "var(--text-dim)" }}>Current password</span>
+      <form onSubmit={handlePasswordSave} className="grid gap-3">
+        <label className="grid gap-2">
+          <span className="text-text-dim">Current password</span>
           <input
             onChange={(event) => setCurrentPassword(event.target.value)}
-            style={fieldStyle}
+            className={FIELD}
             type="password"
             value={currentPassword}
           />
         </label>
 
-        <label style={{ display: "grid", gap: "8px" }}>
-          <span style={{ color: "var(--text-dim)" }}>New password</span>
+        <label className="grid gap-2">
+          <span className="text-text-dim">New password</span>
           <input
             onChange={(event) => setNewPassword(event.target.value)}
-            style={fieldStyle}
+            className={FIELD}
             type="password"
             value={newPassword}
           />
         </label>
 
-        <div
-          style={{
-            alignItems: "center",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "12px",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {passwordMessage ? (
-            <span style={{ color: "var(--text-dim)" }}>{passwordMessage}</span>
+            <span className="text-text-dim">{passwordMessage}</span>
           ) : (
-            <span style={{ color: "var(--text-dim)" }}>
+            <span className="text-text-dim">
               Passwords must be at least 8 characters.
             </span>
           )}
-          <button className="btn-primary" disabled={savingPassword} type="submit">
+          <button className={BTN_PRIMARY} disabled={savingPassword} type="submit">
             <span>{savingPassword ? "Saving..." : "Change password"}</span>
             <span>→</span>
           </button>
@@ -177,12 +154,3 @@ export default function ProfilePanel({
     </section>
   );
 }
-
-const fieldStyle = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid var(--border)",
-  borderRadius: "6px",
-  color: "var(--text)",
-  padding: "12px 14px",
-  width: "100%",
-} satisfies CSSProperties;

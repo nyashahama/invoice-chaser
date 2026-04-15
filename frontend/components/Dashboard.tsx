@@ -220,21 +220,14 @@ export default function Dashboard() {
   return (
     <DashboardShell
       actions={
-        <button className="btn-ghost" onClick={() => void logout()} type="button">
+        <button className="inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase hover:text-text transition-colors py-4 bg-transparent border-none cursor-pointer" onClick={() => void logout()} type="button">
           Sign out
         </button>
       }
       subtitle="Backend-backed invoice and reminder operations. This dashboard now reads and mutates real API state."
       title={`Collections for ${user.full_name.split(" ")[0] || user.email}`}
     >
-      <div
-        style={{
-          display: "grid",
-          gap: "16px",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
         <StatCard label="Outstanding" value={formatCurrency(stats.totalOutstandingCents)} />
         <StatCard label="Active invoices" value={String(stats.activeCount)} />
         <StatCard label="Overdue invoices" value={String(stats.overdueCount)} />
@@ -242,28 +235,13 @@ export default function Dashboard() {
       </div>
 
       {error ? (
-        <div
-          style={{
-            background: "rgba(255,61,61,0.08)",
-            border: "1px solid rgba(255,61,61,0.2)",
-            borderRadius: "8px",
-            color: "var(--text)",
-            marginBottom: "20px",
-            padding: "14px 16px",
-          }}
-        >
+        <div className="mb-5 rounded-lg border border-[rgba(255,61,61,0.2)] bg-[rgba(255,61,61,0.08)] px-4 py-[14px] text-text">
           {error}
         </div>
       ) : null}
 
-      <div
-        style={{
-          display: "grid",
-          gap: "20px",
-          gridTemplateColumns: "minmax(320px, 420px) minmax(0, 1fr)",
-        }}
-      >
-        <div style={{ display: "grid", gap: "20px" }}>
+      <div className="grid grid-cols-[minmax(320px,420px)_minmax(0,1fr)] gap-5">
+        <div className="grid gap-5">
           <InvoiceList
             invoices={invoices}
             loading={loadingInvoices}
@@ -305,27 +283,11 @@ export default function Dashboard() {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        padding: "18px",
-      }}
-    >
-      <div
-        style={{
-          color: "var(--text-dim)",
-          fontFamily: "var(--mono)",
-          fontSize: "11px",
-          letterSpacing: "0.1em",
-          marginBottom: "12px",
-          textTransform: "uppercase",
-        }}
-      >
+    <div className="rounded-lg border border-border-default bg-white/[0.02] p-[18px]">
+      <div className="mb-3 font-mono text-[11px] tracking-[0.1em] uppercase text-text-dim">
         {label}
       </div>
-      <div style={{ fontSize: "28px", fontWeight: 700 }}>{value}</div>
+      <div className="text-[28px] font-bold">{value}</div>
     </div>
   );
 }

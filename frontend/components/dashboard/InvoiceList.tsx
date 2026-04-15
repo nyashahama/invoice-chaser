@@ -20,47 +20,27 @@ export default function InvoiceList({
   selectedInvoiceId,
 }: InvoiceListProps) {
   return (
-    <section
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid var(--border)",
-        borderRadius: "8px",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          alignItems: "center",
-          borderBottom: "1px solid var(--border)",
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "20px",
-        }}
-      >
+    <section className="overflow-hidden rounded-lg border border-border-default bg-white/[0.02]">
+      <div className="flex items-center justify-between border-b border-border-default p-5">
         <div>
-          <h2 style={{ fontSize: "20px", margin: 0 }}>Invoices</h2>
-          <p
-            style={{
-              color: "var(--text-dim)",
-              margin: "8px 0 0",
-            }}
-          >
+          <h2 className="m-0 text-xl">Invoices</h2>
+          <p className="mt-2 text-text-dim">
             Live backend state. Select an invoice to inspect reminders and
             events.
           </p>
         </div>
-        <button className="btn-primary" onClick={onCreateInvoice} type="button">
+        <button className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer" onClick={onCreateInvoice} type="button">
           <span>New invoice</span>
           <span>+</span>
         </button>
       </div>
 
       {loading ? (
-        <p style={{ color: "var(--text-dim)", margin: 0, padding: "20px" }}>
+        <p className="m-0 p-5 text-text-dim">
           Loading invoices...
         </p>
       ) : invoices.length === 0 ? (
-        <p style={{ color: "var(--text-dim)", margin: 0, padding: "20px" }}>
+        <p className="m-0 p-5 text-text-dim">
           No invoices yet. Create your first invoice to start a reminder
           sequence.
         </p>
@@ -73,52 +53,16 @@ export default function InvoiceList({
               <button
                 key={invoice.id}
                 onClick={() => onSelect(invoice.id)}
-                style={{
-                  background: selected ? "rgba(0,230,118,0.08)" : "transparent",
-                  border: "none",
-                  borderBottom: "1px solid var(--border)",
-                  color: "inherit",
-                  cursor: "pointer",
-                  display: "grid",
-                  gap: "8px",
-                  padding: "18px 20px",
-                  textAlign: "left",
-                  width: "100%",
-                }}
+                className={`w-full grid gap-2 border-b border-border-default px-5 py-[18px] text-left cursor-pointer border-none ${selected ? "bg-[rgba(0,230,118,0.08)]" : "bg-transparent"}`}
                 type="button"
               >
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "12px",
-                    justifyContent: "space-between",
-                  }}
-                >
+                <div className="flex items-center justify-between gap-3">
                   <strong>{invoice.client_name}</strong>
-                  <span
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      borderRadius: "999px",
-                      color: "var(--text-dim)",
-                      fontFamily: "var(--mono)",
-                      fontSize: "11px",
-                      padding: "6px 10px",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <span className="rounded-full bg-white/[0.05] px-2.5 py-1.5 font-mono text-[11px] uppercase text-text-dim">
                     {invoice.status}
                   </span>
                 </div>
-                <div
-                  style={{
-                    color: "var(--text-dim)",
-                    display: "grid",
-                    fontFamily: "var(--mono)",
-                    fontSize: "12px",
-                    gap: "4px",
-                  }}
-                >
+                <div className="grid gap-1 font-mono text-xs text-text-dim">
                   <span>{invoice.invoice_number}</span>
                   <span>
                     {formatCurrency(invoice.amount_cents, invoice.currency)} due{" "}

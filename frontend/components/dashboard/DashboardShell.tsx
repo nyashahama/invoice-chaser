@@ -16,47 +16,15 @@ export default function DashboardShell({
   title,
 }: DashboardShellProps) {
   return (
-    <div
-      style={{
-        background:
-          "radial-gradient(circle at top, rgba(0,230,118,0.08), transparent 28%), #050505",
-        color: "var(--text)",
-        minHeight: "100vh",
-        padding: "32px 20px 48px",
-      }}
-    >
-      <div style={{ margin: "0 auto", maxWidth: "1320px" }}>
-        <div
-          style={{
-            alignItems: "flex-end",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "16px",
-            justifyContent: "space-between",
-            marginBottom: "24px",
-          }}
-        >
+    <div className="bg-[radial-gradient(circle_at_top,rgba(0,230,118,0.08),transparent_28%),#050505] text-text min-h-screen px-5 pb-12 pt-8">
+      <div className="mx-auto max-w-[1320px]">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div
-              style={{
-                color: "var(--green)",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.14em",
-                marginBottom: "10px",
-                textTransform: "uppercase",
-              }}
-            >
+            <div className="mb-2.5 font-mono text-[11px] tracking-[0.14em] uppercase text-green">
               Operations
             </div>
-            <h1 style={{ fontSize: "40px", margin: 0 }}>{title}</h1>
-            <p
-              style={{
-                color: "var(--text-dim)",
-                margin: "10px 0 0",
-                maxWidth: "620px",
-              }}
-            >
+            <h1 className="m-0 text-[40px]">{title}</h1>
+            <p className="mt-2.5 max-w-[620px] text-text-dim">
               {subtitle}
             </p>
           </div>

@@ -22,119 +22,56 @@ const reminderPreview = [
 
 export default function DemoPage() {
   return (
-    <main
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(0,230,118,0.06), transparent 25%), #040404",
-        color: "var(--text)",
-        minHeight: "100vh",
-        padding: "32px 20px 56px",
-      }}
-    >
-      <div style={{ margin: "0 auto", maxWidth: "1120px" }}>
+    <main className="min-h-screen bg-[linear-gradient(180deg,rgba(0,230,118,0.06),transparent_25%),#040404] px-5 pb-14 pt-8 text-text">
+      <div className="mx-auto max-w-[1120px]">
         <Link
           href="/"
-          style={{
-            color: "var(--text-dim)",
-            display: "inline-block",
-            fontFamily: "var(--mono)",
-            fontSize: "12px",
-            marginBottom: "24px",
-            textDecoration: "none",
-          }}
+          className="mb-6 inline-block font-mono text-xs tracking-normal text-text-dim no-underline"
         >
           ← Back to home
         </Link>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "20px",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          }}
-        >
-          <section
-            style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid var(--border)",
-              borderRadius: "10px",
-              padding: "28px",
-            }}
-          >
-            <div
-              style={{
-                color: "var(--green)",
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.14em",
-                marginBottom: "12px",
-                textTransform: "uppercase",
-              }}
-            >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
+          <section className="rounded-[10px] border border-border-default bg-white/[0.02] p-7">
+            <div className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-green">
               Product preview
             </div>
-            <h1 style={{ fontSize: "42px", margin: 0 }}>
+            <h1 className="m-0 text-[42px]">
               Backend-driven reminders, not browser AI.
             </h1>
-            <p style={{ color: "var(--text-dim)", lineHeight: 1.7 }}>
+            <p className="leading-[1.7] text-text-dim">
               This preview shows the reminder sequence and dashboard shape
               without exposing model calls or payment logic in the browser. In
               the production app, reminder generation, tracking, and sending all
               stay on the backend.
             </p>
 
-            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-              <Link className="btn-primary" href="/get-started">
+            <div className="mt-6 flex gap-3">
+              <Link className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer" href="/get-started">
                 <span>Create account</span>
                 <span>→</span>
               </Link>
-              <Link className="btn-ghost" href="/dashboard">
+              <Link className="inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase no-underline hover:text-text transition-colors py-4" href="/dashboard">
                 View app shell
               </Link>
             </div>
           </section>
 
-          <section
-            style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid var(--border)",
-              borderRadius: "10px",
-              padding: "28px",
-            }}
-          >
-            <h2 style={{ marginTop: 0 }}>Sequence preview</h2>
-            <div style={{ display: "grid", gap: "14px" }}>
+          <section className="rounded-[10px] border border-border-default bg-white/[0.02] p-7">
+            <h2 className="mt-0">Sequence preview</h2>
+            <div className="grid gap-3.5">
               {reminderPreview.map((item) => (
                 <div
                   key={item.label}
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "8px",
-                    padding: "16px",
-                  }}
+                  className="rounded-lg border border-border-default bg-white/[0.02] p-4"
                 >
-                  <div
-                    style={{
-                      alignItems: "center",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px",
-                    }}
-                  >
+                  <div className="mb-2.5 flex items-center justify-between">
                     <strong>{item.label}</strong>
-                    <span
-                      style={{
-                        color: "var(--text-dim)",
-                        fontFamily: "var(--mono)",
-                        fontSize: "11px",
-                        textTransform: "uppercase",
-                      }}
-                    >
+                    <span className="font-mono text-[11px] uppercase text-text-dim">
                       {item.status}
                     </span>
                   </div>
-                  <p style={{ color: "var(--text-dim)", margin: 0 }}>
+                  <p className="m-0 text-text-dim">
                     {item.body}
                   </p>
                 </div>
