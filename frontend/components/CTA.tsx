@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useRef, useState } from "react";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -70,8 +71,8 @@ export default function CTA() {
       </h2>
 
       <p>
-        Join 200+ freelancers already recovering lost revenue. Free 14-day
-        trial. No credit card.
+        Create an account to use the product now, or join the launch list if
+        you only want rollout updates.
       </p>
 
       {status === "success" ? (
@@ -123,8 +124,8 @@ export default function CTA() {
               </strong>{" "}
               with your access link.
             </p>
-            <a
-              href="/demo"
+            <Link
+              href="/get-started"
               style={{
                 fontFamily: "var(--mono)",
                 fontSize: "11px",
@@ -134,12 +135,29 @@ export default function CTA() {
                 textDecoration: "none",
               }}
             >
-              Try the live demo while you wait ↗
-            </a>
+              Create your account now →
+            </Link>
           </div>
         </div>
       ) : (
         <>
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              justifyContent: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <Link className="btn-primary" href="/get-started">
+              <span>Create account</span>
+              <span>→</span>
+            </Link>
+            <Link className="btn-ghost" href="/demo">
+              Product preview ↗
+            </Link>
+          </div>
+
           <div className="cta-email-form">
             <input
               ref={inputRef}
@@ -204,7 +222,7 @@ export default function CTA() {
           textTransform: "uppercase",
         }}
       >
-        No card required · We review every request · Setup in 5 minutes
+        Create an account for immediate access · Waitlist is for launch updates
       </p>
 
       <style>{`@keyframes ctaSpin { to { transform: rotate(360deg); } }`}</style>
