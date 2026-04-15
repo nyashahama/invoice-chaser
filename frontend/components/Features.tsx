@@ -14,10 +14,10 @@ export default function Features() {
         Features
       </div>
       <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-[72px] max-w-[600px]">
-        Built for people who <em className="font-serif italic font-normal text-text-dim">hate</em> chasing money.
+        Built for people who <em className="font-serif italic font-normal bg-gradient-to-r from-text-dim to-green bg-clip-text text-transparent">hate</em> chasing money.
       </h2>
       <div ref={ref} className="grid grid-cols-1 gap-px bg-border-default border border-border-default mt-[60px] md:grid-cols-2 reveal">
-        <div className="bg-black p-10 transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg feature-card">
+        <div className="bg-black p-10 transition-all duration-300 hover:bg-white/[0.03] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] feature-card">
           <div className="w-8 h-8 rounded-[3px] bg-green/10 border border-green/20 flex items-center justify-center text-green font-bold text-[11px] mb-4">↗</div>
           <div className="text-[17px] font-extrabold mb-2.5 tracking-tight">Integrations that actually work</div>
           <p className="font-mono text-xs text-text-dim leading-[1.65]">
@@ -25,7 +25,7 @@ export default function Features() {
             invoice. No manual data entry.
           </p>
         </div>
-        <div className="bg-black p-10 transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg feature-card">
+        <div className="bg-black p-10 transition-all duration-300 hover:bg-white/[0.03] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] feature-card">
           <div className="w-8 h-8 rounded-[3px] bg-green/10 border border-green/20 flex items-center justify-center text-green font-bold text-[11px] mb-4">⚡</div>
           <div className="text-[17px] font-extrabold mb-2.5 tracking-tight">Smart stop on payment</div>
           <p className="font-mono text-xs text-text-dim leading-[1.65]">
@@ -33,7 +33,7 @@ export default function Features() {
             No awkward &ldquo;thanks, we got it&rdquo; situations.
           </p>
         </div>
-        <div className="bg-black p-10 transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg feature-card">
+        <div className="bg-black p-10 transition-all duration-300 hover:bg-white/[0.03] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] feature-card">
           <div className="w-8 h-8 rounded-[3px] bg-green/10 border border-green/20 flex items-center justify-center text-green font-bold text-[11px] mb-4">↗</div>
           <div className="text-[17px] font-extrabold mb-2.5 tracking-tight">Escalating sequences</div>
           <p className="font-mono text-xs text-text-dim leading-[1.65]">
@@ -41,7 +41,7 @@ export default function Features() {
             business. You set the schedule.
           </p>
         </div>
-        <div className="bg-black p-10 transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg feature-card">
+        <div className="bg-black p-10 transition-all duration-300 hover:bg-white/[0.03] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] feature-card">
           <div className="w-8 h-8 rounded-[3px] bg-green/10 border border-green/20 flex items-center justify-center text-green font-bold text-[11px] mb-4">✦</div>
           <div className="text-[17px] font-extrabold mb-2.5 tracking-tight">Your voice, not ours</div>
           <p className="font-mono text-xs text-text-dim leading-[1.65]">

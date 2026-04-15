@@ -9,15 +9,16 @@ export default function Pricing() {
   });
 
   return (
-    <section className="py-20 px-6 max-w-[1200px] mx-auto md:py-[120px] md:px-12" id="pricing">
+    <section className="py-20 px-6 max-w-[1200px] mx-auto md:py-[120px] md:px-12 relative overflow-hidden" id="pricing">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[500px] bg-[radial-gradient(ellipse,rgba(0,230,118,0.04)_0%,transparent_70%)] pointer-events-none" />
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green mb-4 flex items-center gap-2.5 after:content-[''] after:flex-1 after:h-px after:bg-border-default">
         Pricing
       </div>
       <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-[72px] max-w-[600px]">
-        Pays for itself on the <em className="font-serif italic font-normal text-text-dim">first invoice.</em>
+        Pays for itself on the <em className="font-serif italic font-normal bg-gradient-to-r from-text-dim to-green bg-clip-text text-transparent">first invoice.</em>
       </h2>
       <div ref={ref} className="grid grid-cols-1 gap-px bg-border-default border border-border-default mt-[60px] md:grid-cols-3 reveal">
-        <div className="price-card bg-black py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
+        <div className="price-card bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Starter</span>
           <div className="text-[22px] font-extrabold mb-5">Solo</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">
@@ -35,8 +36,10 @@ export default function Pricing() {
             Get started →
           </a>
         </div>
-        <div className={`price-card bg-surface py-12 px-9 relative transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ring-2 ring-green`}>
-          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Most popular</span>
+        <div className="relative p-[1px] rounded-lg animate-border-rotate overflow-hidden"
+             style={{ background: "conic-gradient(from var(--angle), transparent 30%, #00e676 50%, transparent 70%)" }}>
+          <div className="price-card bg-surface/95 backdrop-blur-xl rounded-lg py-12 px-9 relative transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Most popular</span>
           <div className="text-[22px] font-extrabold mb-5">Pro</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">
             <sup className="text-[0.4em] font-normal text-text-dim align-super">$</sup>49
@@ -56,8 +59,9 @@ export default function Pricing() {
           >
             Start free trial →
           </a>
+          </div>
         </div>
-        <div className="price-card bg-black py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
+        <div className="price-card bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] py-12 px-9 relative transition-all duration-300 hover:bg-surface hover:-translate-y-0.5 hover:shadow-lg">
           <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-2 block">Agency</span>
           <div className="text-[22px] font-extrabold mb-5">Team</div>
           <div className="text-[clamp(36px,4vw,52px)] font-extrabold tracking-tighter leading-none mb-1">

@@ -59,6 +59,7 @@ export default function CTA() {
   return (
     <div className="bg-surface border-t border-border-default py-20 px-6 text-center relative overflow-hidden md:pt-[140px] md:pb-[140px] md:px-12" id="cta">
       <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.08)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-[-200px] right-[-200px] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,230,118,0.04)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green flex items-center justify-center gap-2.5 mb-6">
         <span>Early access</span>
@@ -67,7 +68,7 @@ export default function CTA() {
       <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-[1.1] tracking-tight mb-6">
         Get paid.
         <br />
-        <span className="text-green">On autopilot.</span>
+        <span className="bg-gradient-to-r from-text to-green bg-clip-text text-transparent">On autopilot.</span>
       </h2>
 
       <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-[1.65] max-w-[480px] mx-auto mb-8 font-normal">

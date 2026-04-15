@@ -22,7 +22,8 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
 
     return (
       <section className="min-h-screen grid grid-cols-1 items-center pt-[100px] px-6 pb-[60px] gap-12 relative overflow-hidden md:grid-cols-2 md:pt-[120px] md:px-12 md:pb-20 md:gap-20">
-        <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
+<div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute -bottom-[200px] -left-[200px] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.03)_0%,transparent_70%)] pointer-events-none" />
         <div>
           <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
             Welcome back
@@ -48,8 +49,8 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
           </div>
         </div>
         <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] order-first md:order-none">
-          <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)] hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
-            <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
+          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-lg shadow-[0_25px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden font-mono text-xs hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
+            <div className="bg-white/[0.04] py-3.5 px-5 border-b border-border-default flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
               <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
               <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
@@ -74,6 +75,7 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
   return (
     <section className="min-h-screen grid grid-cols-1 items-center pt-[100px] px-6 pb-[60px] gap-12 relative overflow-hidden md:grid-cols-2 md:pt-[120px] md:px-12 md:pb-20 md:gap-20">
       <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute -bottom-[200px] -left-[200px] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.03)_0%,transparent_70%)] pointer-events-none" />
       <div>
         <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
           Autopilot for overdue invoices
@@ -81,7 +83,7 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
         <h1 className="text-[clamp(42px,5.5vw,76px)] font-extrabold leading-none tracking-tight mb-7 opacity-0 animate-fade-up [animation-delay:200ms]">
           Stop chasing.
           <br />
-          Start <em className="font-serif italic font-normal text-green">getting paid.</em>
+          Start <em className="font-serif italic font-normal bg-gradient-to-r from-text-dim to-green bg-clip-text text-transparent">getting paid.</em>
         </h1>
         <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-[1.65] max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
           Automated follow-ups that escalate from polite to firm — and stop the
@@ -102,8 +104,8 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
         </div>
       </div>
       <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] order-first md:order-none">
-        <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)] hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
-          <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-lg shadow-[0_25px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden font-mono text-xs hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
+          <div className="bg-white/[0.04] py-3.5 px-5 border-b border-border-default flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />

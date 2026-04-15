@@ -79,9 +79,9 @@ const emails: Record<Tone, React.ReactNode> = {
 };
 
 const toneClasses: Record<Tone, string> = {
-  polite: "border-green bg-green-dim before:bg-green",
-  firm: "border-amber bg-amber/[0.08] before:bg-amber",
-  final: "border-red bg-red/[0.08] before:bg-red",
+  polite: "border-green bg-green-dim before:bg-green shadow-[0_0_20px_rgba(0,230,118,0.1)]",
+  firm: "border-amber bg-amber/[0.08] before:bg-amber shadow-[0_0_20px_rgba(255,179,0,0.1)]",
+  final: "border-red bg-red/[0.08] before:bg-red shadow-[0_0_20px_rgba(255,61,61,0.1)]",
 };
 
 export default function ToneSelector() {
@@ -149,8 +149,8 @@ export default function ToneSelector() {
           </div>
         </div>
 
-        <div className="bg-black border border-border-default rounded-[4px] overflow-hidden font-mono text-xs">
-          <div className="bg-surface2 py-3 px-4 border-b border-border-default flex items-center gap-2">
+        <div className="bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-lg shadow-[0_20px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] overflow-hidden font-mono text-xs">
+          <div className="bg-white/[0.04] py-3 px-4 border-b border-border-default flex items-center gap-2">
             <div className="w-[10px] h-[10px] rounded-full bg-[#ff5f57]" />
             <div className="w-[10px] h-[10px] rounded-full bg-[#febc2e]" />
             <div className="w-[10px] h-[10px] rounded-full bg-[#28c840]" />
