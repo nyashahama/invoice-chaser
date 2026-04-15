@@ -18,7 +18,7 @@ const emails: Record<Tone, React.ReactNode> = {
       view and pay it here:
       <br />
       <br />
-      <span style={{ color: "var(--green)" }}>→ Pay Invoice #2301</span>
+      <span className="text-green">→ Pay Invoice #2301</span>
       <br />
       <br />
       Thanks so much,
@@ -38,7 +38,7 @@ const emails: Record<Tone, React.ReactNode> = {
       balance here:
       <br />
       <br />
-      <span style={{ color: "var(--amber)" }}>
+      <span className="text-amber">
         → Pay Invoice #2301 — Due Immediately
       </span>
       <br />
@@ -64,7 +64,7 @@ const emails: Record<Tone, React.ReactNode> = {
       process.
       <br />
       <br />
-      <span style={{ color: "var(--red)" }}>
+      <span className="text-red">
         → Pay Invoice #2301 — Final Notice
       </span>
       <br />
@@ -79,9 +79,9 @@ const emails: Record<Tone, React.ReactNode> = {
 };
 
 const toneClasses: Record<Tone, string> = {
-  polite: "active-tone",
-  firm: "active-amber",
-  final: "active-red",
+  polite: "border-green bg-green-dim before:bg-green",
+  firm: "border-amber bg-amber/[0.08] before:bg-amber",
+  final: "border-red bg-red/[0.08] before:bg-red",
 };
 
 export default function ToneSelector() {
@@ -98,49 +98,45 @@ export default function ToneSelector() {
   };
 
   return (
-    <div className="tone-section" id="tone">
-      <div className="tone-inner">
+    <div
+      className="bg-surface border-t border-b border-border-default py-[100px] px-12 md:py-[60px] md:px-6"
+      id="tone"
+    >
+      <div className="max-w-[1200px] mx-auto grid grid-cols-2 gap-20 items-center md:grid-cols-1">
         <div>
-          <div className="section-label">Tone control</div>
-          <h2 className="section-title" style={{ marginBottom: "32px" }}>
+          <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green mb-4 flex items-center gap-2.5 after:content-[''] after:flex-1 after:h-px after:bg-border-default">
+            Tone control
+          </div>
+          <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-tight tracking-tight mb-8">
             Your voice.
             <br />
-            <em>Automated.</em>
+            <em className="font-serif italic font-normal text-text-dim">Automated.</em>
           </h2>
-          <p
-            style={{
-              fontFamily: "var(--mono)",
-              fontSize: "13px",
-              color: "var(--text-dim)",
-              lineHeight: "1.7",
-              maxWidth: "380px",
-            }}
-          >
+          <p className="font-mono text-[13px] text-text-dim leading-[1.7] max-w-[380px]">
             Every reminder sounds like you wrote it — not a robot. Choose how
             assertive you want to get, and we&apos;ll match that energy across
             the whole sequence.
           </p>
-          <div className="tone-cards" style={{ marginTop: "36px" }}>
+          <div className="flex flex-col gap-3 mt-9">
             {(["polite", "firm", "final"] as Tone[]).map((tone) => (
               <div
                 key={tone}
-                className={`tone-card ${activeTone === tone ? toneClasses[tone] : ""}`}
+                className={`border border-border-default rounded-[3px] py-5 px-6 cursor-pointer transition-all relative overflow-hidden before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-transparent before:transition-colors hover:border-border-light hover:bg-surface2 ${activeTone === tone ? toneClasses[tone] : ""}`}
                 onClick={() => handleTone(tone)}
-                style={{ cursor: "pointer" }}
               >
-                <div className="tone-header">
-                  <span className="tone-name">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-sm font-extrabold tracking-tight">
                     {tone === "polite" && "🤝 Polite"}
                     {tone === "firm" && "📋 Firm"}
                     {tone === "final" && "⚡ Final Notice"}
                   </span>
-                  <span className="tone-day">
+                  <span className="font-mono text-[10px] text-text-muted tracking-[0.1em] uppercase">
                     {tone === "polite" && "Day 1 – 7"}
                     {tone === "firm" && "Day 8 – 21"}
                     {tone === "final" && "Day 22+"}
                   </span>
                 </div>
-                <div className="tone-preview">
+                <div className="font-mono text-[11px] text-text-dim leading-relaxed">
                   {tone === "polite" &&
                     "Warm, professional. Assumes the best. Great for long-term client relationships."}
                   {tone === "firm" &&
@@ -153,43 +149,31 @@ export default function ToneSelector() {
           </div>
         </div>
 
-        <div className="email-window">
-          <div className="email-header">
-            <div className="dot dot-r" />
-            <div className="dot dot-y" />
-            <div className="dot dot-g" />
-            <div
-              style={{
-                fontSize: "10px",
-                color: "var(--text-muted)",
-                marginLeft: "8px",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-              }}
-            >
+        <div className="bg-black border border-border-default rounded-[4px] overflow-hidden font-mono text-xs">
+          <div className="bg-surface2 py-3 px-4 border-b border-border-default flex items-center gap-2">
+            <div className="w-[10px] h-[10px] rounded-full bg-[#ff5f57]" />
+            <div className="w-[10px] h-[10px] rounded-full bg-[#febc2e]" />
+            <div className="w-[10px] h-[10px] rounded-full bg-[#28c840]" />
+            <div className="text-[10px] text-text-muted ml-2 tracking-[0.1em] uppercase">
               Auto-generated email preview
             </div>
           </div>
-          <div className="email-meta">
-            <div className="email-field">
+          <div className="py-4 px-5 border-b border-border-default">
+            <div className="[&>span:first-child]:text-text-muted [&>span:first-child]:min-w-[40px] [&>strong]:text-text flex gap-3 text-text-dim text-[11px] py-0.5">
               <span>From:</span>
               <strong>you@studio.com</strong>
             </div>
-            <div className="email-field">
+            <div className="[&>span:first-child]:text-text-muted [&>span:first-child]:min-w-[40px] [&>strong]:text-text flex gap-3 text-text-dim text-[11px] py-0.5">
               <span>To:</span>
               <strong>billing@acmecorp.com</strong>
             </div>
-            <div className="email-field">
+            <div className="[&>span:first-child]:text-text-muted [&>span:first-child]:min-w-[40px] [&>strong]:text-text flex gap-3 text-text-dim text-[11px] py-0.5">
               <span>Re:</span>
               <strong>Invoice #2301 – $12,500</strong>
             </div>
           </div>
           <div
-            className="email-body"
-            style={{
-              opacity: fading ? 0 : 1,
-              transition: "opacity 0.18s ease",
-            }}
+            className={`py-5 px-5 leading-relaxed text-[11px] text-text-dim min-h-[160px] transition-all duration-[180ms] ${fading ? "opacity-0" : "opacity-1"}`}
           >
             {emails[activeTone]}
           </div>
