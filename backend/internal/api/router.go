@@ -19,6 +19,8 @@ type RouterConfig struct {
 	AllowedOrigins []string
 	Log            *slog.Logger
 	RefreshExpiry  time.Duration
+	CookieSecure   bool
+	CookieSameSite http.SameSite
 
 	// Services
 	Invoices  *service.InvoiceService
@@ -47,7 +49,7 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	r.Use(chimw.StripSlashes)
 
 	// ── Handler instances ────────────────────────────────────────────────────
-	authH := handler.NewAuthHandler(cfg.Users, cfg.RefreshExpiry)
+	authH := handler.NewAuthHandler(cfg.Users, cfg.RefreshExpiry, cfg.CookieSecure, cfg.CookieSameSite)
 	userH := handler.NewUserHandler(cfg.Users)
 	invoiceH := handler.NewInvoiceHandler(cfg.Invoices, cfg.Reminders)
 	remH := handler.NewReminderHandler(cfg.Invoices, cfg.Reminders)

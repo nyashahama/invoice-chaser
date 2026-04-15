@@ -12,15 +12,19 @@ import (
 type AuthHandler struct {
 	users         *service.UserService
 	refreshExpiry time.Duration
+	cookieSecure  bool
+	sameSite      http.SameSite
 }
 
-func NewAuthHandler(users *service.UserService, refreshExpiry time.Duration) *AuthHandler {
+func NewAuthHandler(users *service.UserService, refreshExpiry time.Duration, cookieSecure bool, sameSite http.SameSite) *AuthHandler {
 	if refreshExpiry <= 0 {
 		refreshExpiry = 7 * 24 * time.Hour
 	}
 	return &AuthHandler{
 		users:         users,
 		refreshExpiry: refreshExpiry,
+		cookieSecure:  cookieSecure,
+		sameSite:      sameSite,
 	}
 }
 
@@ -60,7 +64,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry, h.cookieSecure, h.sameSite)
 	respond(w, http.StatusCreated, map[string]any{
 		"access_token": tokens.AccessToken,
 		"user":         shapeUser(user),
@@ -83,7 +87,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry, h.cookieSecure, h.sameSite)
 	respond(w, http.StatusOK, map[string]any{
 		"access_token": tokens.AccessToken,
 		"user":         shapeUser(user),
@@ -104,7 +108,7 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry)
+	setRefreshCookie(w, tokens.RefreshToken, h.refreshExpiry, h.cookieSecure, h.sameSite)
 	respond(w, http.StatusOK, map[string]any{
 		"access_token": tokens.AccessToken,
 	})
@@ -118,28 +122,32 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 		_ = h.users.Logout(r.Context(), cookie.Value)
 	}
 	// Expire the cookie regardless of whether the token was valid.
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
-		Value:    "",
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
-		MaxAge:   -1,
-	})
+	clearRefreshCookie(w, h.cookieSecure, h.sameSite)
 	w.WriteHeader(http.StatusNoContent)
 }
 
 // setRefreshCookie writes the refresh token as an httpOnly Secure cookie.
-func setRefreshCookie(w http.ResponseWriter, token string, expiry time.Duration) {
+func setRefreshCookie(w http.ResponseWriter, token string, expiry time.Duration, secure bool, sameSite http.SameSite) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh_token",
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
+		Secure:   secure,
+		SameSite: sameSite,
 		MaxAge:   int(expiry.Seconds()),
+	})
+}
+
+func clearRefreshCookie(w http.ResponseWriter, secure bool, sameSite http.SameSite) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   secure,
+		SameSite: sameSite,
+		MaxAge:   -1,
 	})
 }
 

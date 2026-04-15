@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -17,6 +18,7 @@ type Config struct {
 	// ── Server ──────────────────────────────────────────────────────────────
 	HTTPAddr        string        // e.g. ":8080"
 	AppBaseURL      string        // e.g. "https://app.invoicechaser.co.za" (no trailing slash)
+	FrontendBaseURL string        // e.g. "https://invoicechaser.co.za" (no trailing slash)
 	ShutdownTimeout time.Duration // graceful shutdown window
 
 	// ── Database ────────────────────────────────────────────────────────────
@@ -29,6 +31,8 @@ type Config struct {
 	JWTSecret      string        // HS256 signing key — must be ≥ 32 bytes
 	JWTExpiry      time.Duration // access token lifetime (default 15m)
 	RefreshExpiry  time.Duration // refresh token lifetime (default 7d)
+	CookieSecure   bool
+	CookieSameSite string
 
 	// ── OpenAI ──────────────────────────────────────────────────────────────
 	OpenAIAPIKey   string
@@ -65,11 +69,13 @@ type Config struct {
 // Returns a fully-populated *Config or an error listing every missing/invalid value.
 func Load() (*Config, error) {
 	l := &loader{}
+	env := l.optional("ENV", "production")
 
 	c := &Config{
 		// ── Server
 		HTTPAddr:        l.optional("HTTP_ADDR", ":8080"),
 		AppBaseURL:      l.required("APP_BASE_URL"),
+		FrontendBaseURL: l.optional("FRONTEND_BASE_URL", ""),
 		ShutdownTimeout: l.duration("SHUTDOWN_TIMEOUT", 30*time.Second),
 
 		// ── Database
@@ -82,6 +88,8 @@ func Load() (*Config, error) {
 		JWTSecret:     l.required("JWT_SECRET"),
 		JWTExpiry:     l.duration("JWT_EXPIRY", 15*time.Minute),
 		RefreshExpiry: l.duration("REFRESH_EXPIRY", 7*24*time.Hour),
+		CookieSecure:  l.boolVal("COOKIE_SECURE", env == "production"),
+		CookieSameSite: l.optional("COOKIE_SAME_SITE", "lax"),
 
 		// ── OpenAI
 		OpenAIAPIKey:    l.required("OPENAI_API_KEY"),
@@ -108,7 +116,7 @@ func Load() (*Config, error) {
 
 		// ── Observability
 		LogLevel:  l.optional("LOG_LEVEL", "info"),
-		Env:       l.optional("ENV", "production"),
+		Env:       env,
 		SentryDSN: l.optional("SENTRY_DSN", ""),
 	}
 
@@ -131,6 +139,17 @@ func (c *Config) IsDevelopment() bool { return c.Env == "development" }
 
 // IsProduction reports whether the app is running in production mode.
 func (c *Config) IsProduction() bool { return c.Env == "production" }
+
+func (c *Config) CookieSameSiteMode() http.SameSite {
+	switch strings.ToLower(c.CookieSameSite) {
+	case "strict":
+		return http.SameSiteStrictMode
+	case "none":
+		return http.SameSiteNoneMode
+	default:
+		return http.SameSiteLaxMode
+	}
+}
 
 // ─── internal helpers ────────────────────────────────────────────────────────
 
@@ -241,6 +260,16 @@ func validate(c *Config) error {
 
 	if c.DBMaxConns < c.DBMinConns {
 		errs = append(errs, "DB_MAX_CONNS must be ≥ DB_MIN_CONNS")
+	}
+
+	switch strings.ToLower(c.CookieSameSite) {
+	case "lax", "strict", "none":
+	default:
+		errs = append(errs, fmt.Sprintf("COOKIE_SAME_SITE must be lax|strict|none, got %q", c.CookieSameSite))
+	}
+
+	if strings.EqualFold(c.CookieSameSite, "none") && !c.CookieSecure {
+		errs = append(errs, "COOKIE_SECURE must be true when COOKIE_SAME_SITE=none")
 	}
 
 	if len(errs) > 0 {

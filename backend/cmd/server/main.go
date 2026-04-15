@@ -106,6 +106,8 @@ func main() {
 		AllowedOrigins:     allowedOrigins(cfg),
 		Log:                log,
 		RefreshExpiry:      cfg.RefreshExpiry,
+		CookieSecure:       cfg.CookieSecure,
+		CookieSameSite:     cfg.CookieSameSiteMode(),
 		Invoices:           invoiceSvc,
 		Reminders:          reminderSvc,
 		Users:              userSvc,
@@ -232,6 +234,9 @@ func newLogger(level string) *slog.Logger {
 // dev server works without extra env config.
 func allowedOrigins(cfg *config.Config) []string {
 	origins := []string{cfg.AppBaseURL}
+	if cfg.FrontendBaseURL != "" {
+		origins = append(origins, cfg.FrontendBaseURL)
+	}
 	if cfg.IsDevelopment() {
 		origins = append(origins,
 			"http://localhost:3000",
