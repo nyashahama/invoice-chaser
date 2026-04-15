@@ -12,6 +12,16 @@ export interface ApiUser {
   timezone: string;
 }
 
+export interface UpdateUserInput {
+  full_name?: string;
+  timezone?: string;
+}
+
+export interface ChangePasswordInput {
+  current_password: string;
+  new_password: string;
+}
+
 export interface AuthResponse {
   access_token: string;
   user: ApiUser;
@@ -40,11 +50,14 @@ export interface PaginatedResponse<T> {
 
 export interface ApiInvoice {
   amount_cents: number;
+  amount_formatted?: string;
   client_contact: string;
   client_email: string;
   client_name: string;
+  click_token?: string;
   created_at: string;
   currency: string;
+  days_overdue?: number;
   description: string;
   due_date: string;
   id: string;
@@ -66,8 +79,10 @@ export interface InvoiceEvent {
 
 export interface InvoiceSequenceInput {
   interval_days: number[];
-  tone: string;
+  tone: InvoiceTone;
 }
+
+export type InvoiceTone = "polite" | "firm" | "final";
 
 export interface CreateInvoiceInput {
   amount_cents: number;
@@ -95,19 +110,17 @@ export interface UpdateInvoiceInput {
 }
 
 export interface ApiReminder {
-  body_html?: string | null;
-  body_text?: string | null;
   created_at: string;
   id: string;
   invoice_id: string;
-  open_token: string;
+  openai_completion_tokens?: number;
+  openai_prompt_tokens?: number;
   scheduled_for: string;
   sent_at?: string | null;
   sequence_position: number;
   status: string;
   subject?: string | null;
-  tone: string;
-  updated_at: string;
+  tone: InvoiceTone;
 }
 
 export interface ReminderSequence {
@@ -118,19 +131,19 @@ export interface ReminderSequence {
   invoice_id: string;
   max_reminders: number;
   reminders: ApiReminder[];
-  tone: string;
+  tone: InvoiceTone;
 }
 
 export interface CreateSequenceInput {
   interval_days: number[];
   max_reminders?: number;
-  tone: string;
+  tone: InvoiceTone;
 }
 
 export interface UpdateSequenceInput {
   interval_days?: number[];
   max_reminders?: number;
-  tone?: string;
+  tone?: InvoiceTone;
 }
 
 export interface ReminderActionResponse {
