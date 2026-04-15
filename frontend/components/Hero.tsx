@@ -21,47 +21,48 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
     const name = getDisplayName(user.full_name, user.email);
 
     return (
-      <section className="hero">
-        <div className="hero-content">
-          <div className="hero-eyebrow">Welcome back</div>
-          <h1 className="hero-title">
-            Hey, <em>{name}.</em>
+      <section className="min-h-screen grid grid-cols-2 items-center pt-[120px] px-12 pb-20 gap-20 relative overflow-hidden md:grid-cols-1 md:pt-[100px] md:px-6 md:pb-[60px] md:gap-12">
+        <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
+        <div className="md:order-last">
+          <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
+            Welcome back
+          </div>
+          <h1 className="text-[clamp(42px,5.5vw,76px)] font-extrabold leading-none tracking-tight mb-7 opacity-0 animate-fade-up [animation-delay:200ms]">
+            Hey, <em className="font-serif italic font-normal text-green">{name}.</em>
           </h1>
-          <p className="hero-sub">
+          <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
             Your autopilot is running. Check your dashboard to see what&apos;s
             been collected while you were away.
           </p>
-          <div className="hero-actions">
+          <div className="flex items-center gap-5 flex-wrap opacity-0 animate-fade-up [animation-delay:400ms]">
             <button
-              className="btn-primary"
+              className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer"
               onClick={() => router.push("/dashboard")}
             >
               <span>Go to dashboard</span>
               <span>→</span>
             </button>
-            <a href="/demo" className="btn-ghost">
+            <a href="/demo" className="inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase no-underline hover:text-text transition-colors py-4">
               Try live demo ↗
             </a>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="invoice-card">
-            <div className="invoice-header">
-              <div className="dot dot-r" />
-              <div className="dot dot-y" />
-              <div className="dot dot-g" />
-              <div className="invoice-title-bar">autopilot — running</div>
+        <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] md:order-first">
+          <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+            <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+              <div className="flex-1 text-center text-[10px] text-text-muted tracking-[0.1em] uppercase">autopilot — running</div>
             </div>
-            <div className="invoice-body">
-            <div className="inv-row">
-              <span>Account</span>
-              <strong>{user.email}</strong>
-            </div>
-            <div className="inv-total">
-              <span>Status</span>
-              <span style={{ color: "var(--green)", fontSize: "16px" }}>
-                  ● Active
-                </span>
+            <div className="p-6">
+              <div className="flex justify-between py-2 border-b border-border-default text-text-dim text-[11px] [&:last-child]:border-b-0">
+                <span>Account</span>
+                <strong className="text-text">{user.email}</strong>
+              </div>
+              <div className="flex justify-between pt-4 pb-2 text-xl font-bold border-t-2 border-border-light mt-2 text-text">
+                <span>Status</span>
+                <span className="text-green text-base">● Active</span>
               </div>
             </div>
           </div>
@@ -71,86 +72,87 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
   }
 
   return (
-    <section className="hero">
-      <div className="hero-content">
-        <div className="hero-eyebrow">Autopilot for overdue invoices</div>
-        <h1 className="hero-title">
+    <section className="min-h-screen grid grid-cols-2 items-center pt-[120px] px-12 pb-20 gap-20 relative overflow-hidden md:grid-cols-1 md:pt-[100px] md:px-6 md:pb-[60px] md:gap-12">
+      <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
+      <div className="md:order-last">
+        <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
+          Autopilot for overdue invoices
+        </div>
+        <h1 className="text-[clamp(42px,5.5vw,76px)] font-extrabold leading-none tracking-tight mb-7 opacity-0 animate-fade-up [animation-delay:200ms]">
           Stop chasing.
           <br />
-          Start <em>getting paid.</em>
+          Start <em className="font-serif italic font-normal text-green">getting paid.</em>
         </h1>
-        <p className="hero-sub">
+        <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
           Automated follow-ups that escalate from polite to firm — and stop the
           instant your client pays. No awkward emails. No forgotten invoices.
         </p>
-        <div className="hero-actions">
+        <div className="flex items-center gap-5 flex-wrap opacity-0 animate-fade-up [animation-delay:400ms]">
           <button
-            className="btn-primary"
+            className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer"
             onClick={() => onOpenAuthModal("register")}
             type="button"
           >
             <span>Start collecting</span>
             <span>→</span>
           </button>
-          <a href="/demo" className="btn-ghost">
+          <a href="/demo" className="inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase no-underline hover:text-text transition-colors py-4">
             Try live demo ↗
           </a>
         </div>
       </div>
-      <div className="hero-visual">
-        <div className="invoice-card">
-          <div className="invoice-header">
-            <div className="dot dot-r" />
-            <div className="dot dot-y" />
-            <div className="dot dot-g" />
-            <div className="invoice-title-bar">invoice #2301 — acme corp</div>
+      <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] md:order-first">
+        <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+          <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+            <div className="flex-1 text-center text-[10px] text-text-muted tracking-[0.1em] uppercase">invoice #2301 — acme corp</div>
           </div>
-          <div className="invoice-body">
-            <div className="inv-row">
+          <div className="p-6">
+            <div className="flex justify-between py-2 border-b border-border-default text-text-dim text-[11px] [&:last-child]:border-b-0">
               <span>Client</span>
-              <strong>Acme Corp</strong>
+              <strong className="text-text">Acme Corp</strong>
             </div>
-            <div className="inv-row">
+            <div className="flex justify-between py-2 border-b border-border-default text-text-dim text-[11px] [&:last-child]:border-b-0">
               <span>Issued</span>
-              <strong>Feb 01, 2025</strong>
+              <strong className="text-text">Feb 01, 2025</strong>
             </div>
-            <div className="inv-row">
+            <div className="flex justify-between py-2 border-b border-border-default text-text-dim text-[11px] [&:last-child]:border-b-0">
               <span>Due</span>
-              <strong>Feb 15, 2025</strong>
+              <strong className="text-text">Feb 15, 2025</strong>
             </div>
-            <div className="inv-row">
+            <div className="flex justify-between py-2 border-b border-border-default text-text-dim text-[11px] [&:last-child]:border-b-0">
               <span>Status</span>
-              <div className="status-badge status-overdue">
+              <div className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.15em] uppercase px-2.5 py-1 rounded-[2px] mt-1 bg-red/15 text-red border border-red/30">
                 ● 28 days overdue
               </div>
             </div>
-            <div className="inv-total">
+            <div className="flex justify-between pt-4 pb-2 text-xl font-bold border-t-2 border-border-light mt-2 text-text">
               <span>Total Due</span>
-              <span className="amount">$12,500</span>
+              <span className="text-red">$12,500</span>
             </div>
-            <div className="reminder-thread">
-              <div className="thread-label">{"// auto-reminders sent"}</div>
-              <div className="reminder-item">
-                <div className="r-icon r-sent">✓</div>
-                <div className="r-text">
-                  <div className="r-label">Friendly reminder · Day 1</div>
-                  <div className="r-date">Feb 16 · Opened ✓</div>
+            <div className="mt-4 border-t border-border-default pt-4">
+              <div className="text-[9px] tracking-[0.2em] uppercase text-text-muted mb-2.5">{"// auto-reminders sent"}</div>
+              <div className="flex items-start gap-2.5 py-2 border-b border-border-default last:border-b-0 animate-slide-in [animation-delay:1200ms]">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] shrink-0 mt-px bg-green/15 text-green">✓</div>
+                <div className="flex-1">
+                  <div className="text-[10px] text-text-dim mb-0.5">Friendly reminder · Day 1</div>
+                  <div className="text-[9px] text-text-muted">Feb 16 · Opened ✓</div>
                 </div>
               </div>
-              <div className="reminder-item">
-                <div className="r-icon r-sent">✓</div>
-                <div className="r-text">
-                  <div className="r-label">Follow-up · Day 7</div>
-                  <div className="r-date">Feb 22 · Opened ✓</div>
+              <div className="flex items-start gap-2.5 py-2 border-b border-border-default last:border-b-0 animate-slide-in [animation-delay:1600ms]">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] shrink-0 mt-px bg-green/15 text-green">✓</div>
+                <div className="flex-1">
+                  <div className="text-[10px] text-text-dim mb-0.5">Follow-up · Day 7</div>
+                  <div className="text-[9px] text-text-muted">Feb 22 · Opened ✓</div>
                 </div>
               </div>
-              <div className="reminder-item">
-                <div className="r-icon r-pending">⚡</div>
-                <div className="r-text">
-                  <div className="r-label">Final notice · Day 14</div>
-                  <div className="r-date" style={{ color: "var(--amber)" }}>
-                    Sending now...
-                  </div>
+              <div className="flex items-start gap-2.5 py-2 border-b border-border-default last:border-b-0 animate-slide-in [animation-delay:2000ms]">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] shrink-0 mt-px bg-amber/15 text-amber">⚡</div>
+                <div className="flex-1">
+                  <div className="text-[10px] text-text-dim mb-0.5">Final notice · Day 14</div>
+                  <div className="text-[9px] text-amber">Sending now...</div>
                 </div>
               </div>
             </div>
