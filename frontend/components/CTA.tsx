@@ -9,16 +9,17 @@ export default function CTA() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [inputError, setInputError] = useState(false);
 
   const handleSignup = async () => {
     const email = inputRef.current?.value?.trim();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       if (inputRef.current) {
-        inputRef.current.style.borderColor = "var(--red)";
+        setInputError(true);
         inputRef.current.focus();
         setTimeout(() => {
-          if (inputRef.current) inputRef.current.style.borderColor = "";
+          setInputError(false);
         }, 1400);
       }
       return;
@@ -56,84 +57,44 @@ export default function CTA() {
   };
 
   return (
-    <div className="cta-final" id="cta">
-      <div
-        className="section-label"
-        style={{ justifyContent: "center", marginBottom: "24px" }}
-      >
+    <div className="bg-surface border-t border-border-default pt-[140px] pb-[140px] px-12 text-center relative overflow-hidden md:py-20 md:px-6" id="cta">
+      <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.08)_0%,transparent_70%)] pointer-events-none" />
+
+      <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-green flex items-center justify-center gap-2.5 mb-6">
         <span>Early access</span>
       </div>
 
-      <h2>
+      <h2 className="text-[clamp(32px,4vw,52px)] font-extrabold leading-tight tracking-tight mb-6">
         Get paid.
         <br />
-        <span style={{ color: "var(--green)" }}>On autopilot.</span>
+        <span className="text-green">On autopilot.</span>
       </h2>
 
-      <p>
+      <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mx-auto mb-8 font-normal">
         Create an account to use the product now, or join the launch list if
         you only want rollout updates.
       </p>
 
       {status === "success" ? (
-        <div style={{ maxWidth: "480px", margin: "0 auto" }}>
-          <div
-            style={{
-              border: "1px solid rgba(0,230,118,0.4)",
-              borderRadius: "3px",
-              padding: "28px 32px",
-              background: "rgba(0,230,118,0.04)",
-              textAlign: "left",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "10px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "var(--green)",
-                marginBottom: "12px",
-              }}
-            >
+        <div className="max-w-[480px] mx-auto">
+          <div className="border border-[rgba(0,230,118,0.4)] rounded-[3px] py-7 px-8 bg-[rgba(0,230,118,0.04)] text-left">
+            <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-green mb-3">
               {"// request received"}
             </div>
-            <div
-              style={{
-                fontSize: "20px",
-                fontWeight: 800,
-                marginBottom: "10px",
-                letterSpacing: "-0.02em",
-              }}
-            >
+            <div className="text-[20px] font-extrabold mb-2.5 tracking-[-0.02em]">
               You&apos;re on the list.
             </div>
-            <p
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "12px",
-                color: "var(--text-dim)",
-                lineHeight: 1.7,
-                margin: "0 0 20px",
-              }}
-            >
+            <p className="font-mono text-xs text-text-dim leading-[1.7] mb-5">
               Check your inbox — we just sent a confirmation. We review every
               application personally and you&apos;ll hear back within{" "}
-              <strong style={{ color: "var(--text)" }}>
+              <strong className="text-text">
                 1–2 business days
               </strong>{" "}
               with your access link.
             </p>
             <Link
               href="/get-started"
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--green)",
-                textDecoration: "none",
-              }}
+              className="font-mono text-[11px] tracking-[0.08em] uppercase text-green no-underline"
             >
               Create your account now →
             </Link>
@@ -141,53 +102,33 @@ export default function CTA() {
         </div>
       ) : (
         <>
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              justifyContent: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <Link className="btn-primary" href="/get-started">
+          <div className="flex gap-3 justify-center mb-5">
+            <Link className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer" href="/get-started">
               <span>Create account</span>
               <span>→</span>
             </Link>
-            <Link className="btn-ghost" href="/demo">
+            <Link className="inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase no-underline hover:text-text transition-colors py-4" href="/demo">
               Product preview ↗
             </Link>
           </div>
 
-          <div className="cta-email-form">
+          <div className="flex gap-3 justify-center max-w-[480px] mx-auto md:flex-col">
             <input
               ref={inputRef}
               type="email"
-              className="cta-input"
+              className={`flex-1 bg-black border ${inputError ? "border-red" : "border-border-light"} text-text font-mono text-[13px] px-[18px] py-3.5 rounded-[2px] outline-none focus:border-green placeholder:text-text-muted`}
               placeholder="your@email.com"
               disabled={status === "loading"}
               onKeyDown={(e) => e.key === "Enter" && handleSignup()}
             />
             <button
-              className="btn-primary"
+              className={`inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer ${status === "loading" ? "opacity-70" : ""}`}
               onClick={handleSignup}
               disabled={status === "loading"}
-              style={{ opacity: status === "loading" ? 0.7 : 1 }}
             >
               {status === "loading" ? (
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: "11px",
-                      height: "11px",
-                      border: "2px solid rgba(0,0,0,0.25)",
-                      borderTopColor: "var(--black)",
-                      borderRadius: "50%",
-                      animation: "ctaSpin 0.7s linear infinite",
-                    }}
-                  />
+                <span className="inline-flex items-center gap-2">
+                  <span className="inline-block w-[11px] h-[11px] border-2 border-[rgba(0,0,0,0.25)] border-t-black rounded-full animate-cta-spin" />
                   Sending…
                 </span>
               ) : (
@@ -197,35 +138,16 @@ export default function CTA() {
           </div>
 
           {status === "error" && (
-            <p
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "11px",
-                color: "var(--red)",
-                marginTop: "12px",
-                letterSpacing: "0.04em",
-              }}
-            >
+            <p className="font-mono text-[11px] text-red mt-3 tracking-[0.04em]">
               ✗ {errorMsg}
             </p>
           )}
         </>
       )}
 
-      <p
-        style={{
-          fontFamily: "var(--mono)",
-          fontSize: "10px",
-          color: "var(--text-muted)",
-          marginTop: "20px",
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-        }}
-      >
+      <p className="font-mono text-[10px] text-text-muted mt-5 tracking-[0.1em] uppercase">
         Create an account for immediate access · Waitlist is for launch updates
       </p>
-
-      <style>{`@keyframes ctaSpin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
