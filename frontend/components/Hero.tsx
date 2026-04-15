@@ -21,16 +21,16 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
     const name = getDisplayName(user.full_name, user.email);
 
     return (
-      <section className="min-h-screen grid grid-cols-2 items-center pt-[120px] px-12 pb-20 gap-20 relative overflow-hidden md:grid-cols-1 md:pt-[100px] md:px-6 md:pb-[60px] md:gap-12">
+      <section className="min-h-screen grid grid-cols-1 items-center pt-[100px] px-6 pb-[60px] gap-12 relative overflow-hidden md:grid-cols-2 md:pt-[120px] md:px-12 md:pb-20 md:gap-20">
         <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
-        <div className="md:order-last">
+        <div>
           <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
             Welcome back
           </div>
           <h1 className="text-[clamp(42px,5.5vw,76px)] font-extrabold leading-none tracking-tight mb-7 opacity-0 animate-fade-up [animation-delay:200ms]">
             Hey, <em className="font-serif italic font-normal text-green">{name}.</em>
           </h1>
-          <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
+          <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-[1.65] max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
             Your autopilot is running. Check your dashboard to see what&apos;s
             been collected while you were away.
           </p>
@@ -47,8 +47,8 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
             </a>
           </div>
         </div>
-        <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] md:order-first">
-          <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+        <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] order-first md:order-none">
+          <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)] hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
             <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
               <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
@@ -72,9 +72,9 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
   }
 
   return (
-    <section className="min-h-screen grid grid-cols-2 items-center pt-[120px] px-12 pb-20 gap-20 relative overflow-hidden md:grid-cols-1 md:pt-[100px] md:px-6 md:pb-[60px] md:gap-12">
+    <section className="min-h-screen grid grid-cols-1 items-center pt-[100px] px-6 pb-[60px] gap-12 relative overflow-hidden md:grid-cols-2 md:pt-[120px] md:px-12 md:pb-20 md:gap-20">
       <div className="absolute -top-[200px] -right-[200px] w-[700px] h-[700px] bg-[radial-gradient(circle,rgba(0,230,118,0.06)_0%,transparent_70%)] pointer-events-none" />
-      <div className="md:order-last">
+      <div>
         <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-green mb-7 flex items-center gap-3 opacity-0 animate-fade-up [animation-delay:100ms] before:content-[''] before:block before:w-6 before:h-px before:bg-green">
           Autopilot for overdue invoices
         </div>
@@ -83,7 +83,7 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
           <br />
           Start <em className="font-serif italic font-normal text-green">getting paid.</em>
         </h1>
-        <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-relaxed max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
+        <p className="text-[clamp(16px,1.8vw,20px)] text-text-dim leading-[1.65] max-w-[480px] mb-12 font-normal opacity-0 animate-fade-up [animation-delay:300ms]">
           Automated follow-ups that escalate from polite to firm — and stop the
           instant your client pays. No awkward emails. No forgotten invoices.
         </p>
@@ -101,8 +101,8 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
           </a>
         </div>
       </div>
-      <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] md:order-first">
-        <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+      <div className="relative opacity-0 animate-fade-in [animation-delay:500ms] order-first md:order-none">
+        <div className="bg-surface border border-border-default rounded-[4px] overflow-hidden font-mono text-xs shadow-[0_40px_80px_rgba(0,0,0,0.6)] hover:shadow-[0_4px_20px_rgba(0,230,118,0.08)] transition-shadow duration-300">
           <div className="bg-surface2 py-3.5 px-5 border-b border-border-default flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
