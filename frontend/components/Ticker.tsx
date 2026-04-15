@@ -4,7 +4,9 @@ import React from "react";
 
 export default function Ticker() {
   return (
-    <div className="border-t border-b border-border-default bg-surface2 overflow-hidden py-3 whitespace-nowrap mt-16">
+    <>
+      <div className="divider-gradient" />
+      <div className="bg-surface2 overflow-hidden py-3 whitespace-nowrap mt-16">
       <div className="inline-flex gap-0 animate-ticker">
         <span className="inline-flex items-center gap-2 font-mono text-[11px] text-text-muted tracking-[0.1em] px-10 uppercase">
           ✓ Invoice #1042
@@ -81,5 +83,6 @@ export default function Ticker() {
         </span>
       </div>
     </div>
+    </>
   );
 }

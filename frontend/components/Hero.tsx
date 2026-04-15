@@ -37,7 +37,7 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
           </p>
           <div className="flex items-center gap-5 flex-wrap opacity-0 animate-fade-up [animation-delay:400ms]">
             <button
-              className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer"
+              className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] hover:scale-[1.02] active:scale-[0.98] border-none cursor-pointer"
               onClick={() => router.push("/dashboard")}
             >
               <span>Go to dashboard</span>
@@ -91,7 +91,7 @@ export default function Hero({ onOpenAuthModal }: HeroProps) {
         </p>
         <div className="flex items-center gap-5 flex-wrap opacity-0 animate-fade-up [animation-delay:400ms]">
           <button
-            className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer"
+            className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] hover:scale-[1.02] active:scale-[0.98] border-none cursor-pointer"
             onClick={() => onOpenAuthModal("register")}
             type="button"
           >

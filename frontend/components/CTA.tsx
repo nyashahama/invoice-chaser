@@ -57,7 +57,9 @@ export default function CTA() {
   };
 
   return (
-    <div className="bg-surface border-t border-border-default py-20 px-6 text-center relative overflow-hidden md:pt-[140px] md:pb-[140px] md:px-12" id="cta">
+    <>
+      <div className="divider-gradient" />
+      <div className="bg-surface py-20 px-6 text-center relative overflow-hidden md:pt-[140px] md:pb-[140px] md:px-12" id="cta">
       <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(0,230,118,0.08)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute top-[-200px] right-[-200px] w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(0,230,118,0.04)_0%,transparent_70%)] pointer-events-none" />
 
@@ -104,7 +106,7 @@ export default function CTA() {
       ) : (
         <>
           <div className="flex gap-3 justify-center mb-5">
-            <Link className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer" href="/get-started">
+            <Link className="inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] hover:scale-[1.02] active:scale-[0.98] border-none cursor-pointer" href="/get-started">
               <span>Create account</span>
               <span>→</span>
             </Link>
@@ -123,7 +125,7 @@ export default function CTA() {
               onKeyDown={(e) => e.key === "Enter" && handleSignup()}
             />
             <button
-              className={`inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] border-none cursor-pointer ${status === "loading" ? "opacity-70" : ""}`}
+              className={`inline-flex items-center gap-2.5 bg-green text-black font-mono text-[13px] font-bold tracking-[0.05em] uppercase px-8 py-4 rounded-[2px] no-underline transition-all hover:bg-[#1fffaa] hover:-translate-y-px hover:shadow-[0_8px_32px_rgba(0,230,118,0.3)] hover:scale-[1.02] active:scale-[0.98] border-none cursor-pointer ${status === "loading" ? "opacity-70" : ""}`}
               onClick={handleSignup}
               disabled={status === "loading"}
             >
@@ -150,5 +152,6 @@ export default function CTA() {
         Create an account for immediate access · Waitlist is for launch updates
       </p>
     </div>
+    </>
   );
 }
