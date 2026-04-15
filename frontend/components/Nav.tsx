@@ -14,32 +14,33 @@ export default function Nav({ onOpenAuthModal }: NavProps) {
   const { authenticated, logout } = useSession();
 
   return (
-    <nav>
-      <div className="nav-logo">
-        Invoice<span>Chaser</span>
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-5 border-b border-border-default bg-black/90 backdrop-blur-md">
+      <div className="font-mono text-[13px] font-bold tracking-[0.08em] text-green uppercase">
+        Invoice<span className="text-text-dim">Chaser</span>
       </div>
-      <ul className="nav-links">
+      <ul className="hidden md:flex items-center gap-8 list-none">
         {!authenticated && (
           <>
             <li>
-              <a href="#how">How it works</a>
+              <a
+                href="#how"
+                className="font-mono text-[11px] tracking-[0.12em] uppercase text-text-dim no-underline hover:text-text transition-colors"
+              >
+                How it works
+              </a>
             </li>
             <li>
-              <a href="#pricing">Pricing</a>
+              <a
+                href="#pricing"
+                className="font-mono text-[11px] tracking-[0.12em] uppercase text-text-dim no-underline hover:text-text transition-colors"
+              >
+                Pricing
+              </a>
             </li>
             <li>
               <button
-                className="nav-auth"
+                className="bg-transparent border-none text-text-dim cursor-pointer font-mono text-[12px] p-0"
                 onClick={() => onOpenAuthModal("login")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "var(--text-dim)",
-                  cursor: "pointer",
-                  fontFamily: "var(--mono)",
-                  fontSize: "12px",
-                  padding: 0,
-                }}
                 type="button"
               >
                 Sign in
@@ -48,12 +49,20 @@ export default function Nav({ onOpenAuthModal }: NavProps) {
           </>
         )}
         <li>
-          <a href="/demo">Live demo ↗</a>
+          <a
+            href="/demo"
+            className="font-mono text-[11px] tracking-[0.12em] uppercase text-text-dim no-underline hover:text-text transition-colors"
+          >
+            Live demo ↗
+          </a>
         </li>
         {authenticated ? (
           <>
             <li>
-              <a href="/dashboard" className="nav-cta">
+              <a
+                href="/dashboard"
+                className="font-mono text-[11px] tracking-[0.1em] uppercase text-black bg-green px-5 py-2 rounded-[2px] no-underline hover:opacity-85 transition-opacity border-none cursor-pointer"
+              >
                 Dashboard →
               </a>
             </li>
@@ -63,14 +72,7 @@ export default function Nav({ onOpenAuthModal }: NavProps) {
                   void logout();
                   router.push("/");
                 }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--text-dim)",
-                  fontFamily: "var(--mono)",
-                  fontSize: "12px",
-                }}
+                className="bg-transparent border-none cursor-pointer text-text-dim font-mono text-[12px]"
                 type="button"
               >
                 Sign out
@@ -80,7 +82,7 @@ export default function Nav({ onOpenAuthModal }: NavProps) {
         ) : (
           <li>
             <button
-              className="nav-cta"
+              className="font-mono text-[11px] tracking-[0.1em] uppercase text-black bg-green px-5 py-2 rounded-[2px] no-underline hover:opacity-85 transition-opacity border-none cursor-pointer"
               onClick={() => onOpenAuthModal("register")}
               type="button"
             >
