@@ -248,6 +248,40 @@ func (q *Queries) GetInvoiceByIDForUser(ctx context.Context, arg GetInvoiceByIDF
 	return i, err
 }
 
+const getInvoiceCollectionStateByInvoiceForUser = `-- name: GetInvoiceCollectionStateByInvoiceForUser :one
+SELECT ics.invoice_id, ics.risk_score, ics.engagement_state, ics.next_best_action, ics.recommended_tone, ics.recommended_send_at, ics.reasons, ics.metrics, ics.last_event_at, ics.last_evaluated_at, ics.applied_at, ics.created_at, ics.updated_at
+FROM invoice_collection_states ics
+JOIN invoices i ON i.id = ics.invoice_id
+WHERE ics.invoice_id = $1
+  AND i.user_id = $2
+`
+
+type GetInvoiceCollectionStateByInvoiceForUserParams struct {
+	InvoiceID uuid.UUID `json:"invoice_id"`
+	UserID    uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) GetInvoiceCollectionStateByInvoiceForUser(ctx context.Context, arg GetInvoiceCollectionStateByInvoiceForUserParams) (InvoiceCollectionState, error) {
+	row := q.db.QueryRow(ctx, getInvoiceCollectionStateByInvoiceForUser, arg.InvoiceID, arg.UserID)
+	var i InvoiceCollectionState
+	err := row.Scan(
+		&i.InvoiceID,
+		&i.RiskScore,
+		&i.EngagementState,
+		&i.NextBestAction,
+		&i.RecommendedTone,
+		&i.RecommendedSendAt,
+		&i.Reasons,
+		&i.Metrics,
+		&i.LastEventAt,
+		&i.LastEvaluatedAt,
+		&i.AppliedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listInvoicesForUser = `-- name: ListInvoicesForUser :many
 SELECT id, user_id, invoice_number, client_name, client_email, client_contact, amount_cents, currency, due_date, description, notes, status, paid_at, payment_source, external_id, click_token, payfast_payment_id, created_at, updated_at FROM invoices
 WHERE user_id = $1

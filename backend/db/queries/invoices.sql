@@ -87,3 +87,10 @@ WHERE invoice_id = (SELECT invoice_id FROM paid)
 UPDATE invoices
 SET status = 'cancelled'
 WHERE id = $1 AND user_id = $2;
+
+-- name: GetInvoiceCollectionStateByInvoiceForUser :one
+SELECT ics.*
+FROM invoice_collection_states ics
+JOIN invoices i ON i.id = ics.invoice_id
+WHERE ics.invoice_id = $1
+  AND i.user_id = $2;

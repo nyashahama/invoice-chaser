@@ -32,6 +32,8 @@ type Querier interface {
 	GetInvoiceByClickToken(ctx context.Context, clickToken string) (Invoice, error)
 	GetInvoiceByID(ctx context.Context, id uuid.UUID) (Invoice, error)
 	GetInvoiceByIDForUser(ctx context.Context, arg GetInvoiceByIDForUserParams) (Invoice, error)
+	GetInvoiceCollectionState(ctx context.Context, invoiceID uuid.UUID) (InvoiceCollectionState, error)
+	GetInvoiceCollectionStateByInvoiceForUser(ctx context.Context, arg GetInvoiceCollectionStateByInvoiceForUserParams) (InvoiceCollectionState, error)
 	GetRefreshToken(ctx context.Context, tokenHash string) (RefreshToken, error)
 	GetReminderByID(ctx context.Context, id uuid.UUID) (Reminder, error)
 	GetReminderByOpenToken(ctx context.Context, openToken string) (Reminder, error)
@@ -45,6 +47,7 @@ type Querier interface {
 	ListInvoicesForUser(ctx context.Context, arg ListInvoicesForUserParams) ([]Invoice, error)
 	ListOverdueInvoices(ctx context.Context) ([]Invoice, error)
 	ListRemindersByInvoice(ctx context.Context, invoiceID uuid.UUID) ([]Reminder, error)
+	MarkInvoiceCollectionStateApplied(ctx context.Context, invoiceID uuid.UUID) (InvoiceCollectionState, error)
 	MarkInvoicePaid(ctx context.Context, arg MarkInvoicePaidParams) (Invoice, error)
 	MarkInvoicePaidAndCancelReminders(ctx context.Context, arg MarkInvoicePaidAndCancelRemindersParams) error
 	MarkRefreshTokenUsed(ctx context.Context, id uuid.UUID) error
@@ -68,6 +71,7 @@ type Querier interface {
 	UpdateSequence(ctx context.Context, arg UpdateSequenceParams) (ReminderSequence, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 	UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error
+	UpsertInvoiceCollectionState(ctx context.Context, arg UpsertInvoiceCollectionStateParams) (InvoiceCollectionState, error)
 }
 
 var _ Querier = (*Queries)(nil)
