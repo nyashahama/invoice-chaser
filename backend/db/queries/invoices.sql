@@ -88,9 +88,30 @@ UPDATE invoices
 SET status = 'cancelled'
 WHERE id = $1 AND user_id = $2;
 
--- name: GetInvoiceCollectionStateByInvoiceForUser :one
-SELECT ics.*
-FROM invoice_collection_states ics
-JOIN invoices i ON i.id = ics.invoice_id
-WHERE ics.invoice_id = $1
-  AND i.user_id = $2;
+-- name: GetInvoiceCollectionState :one
+SELECT * FROM invoice_collection_states
+WHERE invoice_id = $1;
+
+-- name: UpsertInvoiceCollectionState :exec
+INSERT INTO invoice_collection_states (
+    invoice_id, risk_score, engagement_state, next_best_action,
+    recommended_tone, recommended_send_at, reasons, metrics,
+    last_event_at, last_evaluated_at, applied_at
+)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+ON CONFLICT (invoice_id) DO UPDATE SET
+    risk_score = EXCLUDED.risk_score,
+    engagement_state = EXCLUDED.engagement_state,
+    next_best_action = EXCLUDED.next_best_action,
+    recommended_tone = EXCLUDED.recommended_tone,
+    recommended_send_at = EXCLUDED.recommended_send_at,
+    reasons = EXCLUDED.reasons,
+    metrics = EXCLUDED.metrics,
+    last_event_at = EXCLUDED.last_event_at,
+    last_evaluated_at = EXCLUDED.last_evaluated_at,
+    applied_at = EXCLUDED.applied_at;
+
+-- name: MarkCollectionStateApplied :exec
+UPDATE invoice_collection_states
+SET applied_at = NOW()
+WHERE invoice_id = $1;

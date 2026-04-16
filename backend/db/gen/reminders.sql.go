@@ -581,6 +581,23 @@ func (q *Queries) StoreGeneratedEmail(ctx context.Context, arg StoreGeneratedEma
 	return err
 }
 
+const updatePendingReminderToneByInvoice = `-- name: UpdatePendingReminderToneByInvoice :exec
+UPDATE reminders
+SET tone = $2, updated_at = NOW()
+WHERE invoice_id = $1
+  AND status = 'pending'
+`
+
+type UpdatePendingReminderToneByInvoiceParams struct {
+	InvoiceID uuid.UUID `json:"invoice_id"`
+	Tone      string    `json:"tone"`
+}
+
+func (q *Queries) UpdatePendingReminderToneByInvoice(ctx context.Context, arg UpdatePendingReminderToneByInvoiceParams) error {
+	_, err := q.db.Exec(ctx, updatePendingReminderToneByInvoice, arg.InvoiceID, arg.Tone)
+	return err
+}
+
 const updateSequence = `-- name: UpdateSequence :one
 UPDATE reminder_sequences
 SET

@@ -71,6 +71,8 @@ func main() {
 
 	reminderSvc := service.NewReminderService(queries, log)
 
+	optimizerSvc := service.NewCollectionOptimizer(queries, log)
+
 	emailSvc := service.NewEmailService(
 		openaiClient,
 		mailer,
@@ -110,6 +112,7 @@ func main() {
 		CookieSameSite:     cfg.CookieSameSiteMode(),
 		Invoices:           invoiceSvc,
 		Reminders:          reminderSvc,
+		Optimizer:          optimizerSvc,
 		Users:              userSvc,
 		Scheduler:          schedulerSvc,
 		PayFastVerifier:    pfVerifier,

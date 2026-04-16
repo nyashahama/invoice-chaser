@@ -112,6 +112,12 @@ SET scheduled_for = @scheduled_for,
 WHERE id     = @id
   AND status  = 'pending';
 
+-- name: UpdatePendingReminderToneByInvoice :exec
+UPDATE reminders
+SET tone = $2, updated_at = NOW()
+WHERE invoice_id = $1
+  AND status = 'pending';
+
 -- name: StoreGeneratedEmail :exec
 UPDATE reminders
 SET

@@ -107,7 +107,7 @@ func (s *ReminderService) GetSequence(ctx context.Context, invoiceID uuid.UUID) 
 type UpdateSequenceParams struct {
 	SequenceID   uuid.UUID
 	InvoiceID    uuid.UUID
-	DueDate      time.Time  // needed to recompute reminder dates
+	DueDate      time.Time // needed to recompute reminder dates
 	Tone         *domain.Tone
 	IntervalDays []int32
 	MaxReminders *int
@@ -313,4 +313,84 @@ func (s *ReminderService) GetEvents(ctx context.Context, invoiceID uuid.UUID) ([
 // back to "pending" for recovery after a crash.
 func (s *ReminderService) ResetStuckReminders(ctx context.Context) error {
 	return s.q.ResetStuckSendingReminders(ctx)
+}
+
+func (s *ReminderService) ApplyCollectionRecommendation(ctx context.Context, inv domain.Invoice, state domain.CollectionState) (domain.ReminderSequence, []domain.Reminder, error) {
+	seq, err := s.q.GetSequenceByInvoiceID(ctx, inv.ID)
+	if err != nil {
+		return domain.ReminderSequence{}, nil, fmt.Errorf("get sequence: %w", err)
+	}
+	domSeq := domain.SequenceFromDB(seq)
+
+	reminders, err := s.q.ListRemindersByInvoice(ctx, inv.ID)
+	if err != nil {
+		return domain.ReminderSequence{}, nil, fmt.Errorf("list reminders: %w", err)
+	}
+
+	switch state.NextBestAction {
+	case domain.CollectionActionFixEmail:
+		return domSeq, nil, fmt.Errorf("%w: fix_email requires manual action", domain.ErrValidation)
+
+	case domain.CollectionActionWait:
+		if state.RecommendedSendAt == nil {
+			return domSeq, nil, nil
+		}
+		var nextPendingID uuid.UUID
+		for _, r := range reminders {
+			if r.Status == string(domain.ReminderStatusPending) {
+				nextPendingID = r.ID
+				break
+			}
+		}
+		if nextPendingID != uuid.Nil {
+			err = s.q.RescheduleReminder(ctx, db.RescheduleReminderParams{
+				ID:           nextPendingID,
+				ScheduledFor: pgtype.Timestamptz{Time: *state.RecommendedSendAt, Valid: true},
+			})
+			if err != nil {
+				return domain.ReminderSequence{}, nil, fmt.Errorf("reschedule: %w", err)
+			}
+		}
+
+	case domain.CollectionActionSendNow:
+		var nextPendingID uuid.UUID
+		for _, r := range reminders {
+			if r.Status == string(domain.ReminderStatusPending) {
+				nextPendingID = r.ID
+				break
+			}
+		}
+		if nextPendingID != uuid.Nil {
+			err = s.q.RescheduleReminder(ctx, db.RescheduleReminderParams{
+				ID:           nextPendingID,
+				ScheduledFor: pgtype.Timestamptz{Time: time.Now().UTC(), Valid: true},
+			})
+			if err != nil {
+				return domain.ReminderSequence{}, nil, fmt.Errorf("send now: %w", err)
+			}
+		}
+
+	case domain.CollectionActionEscalateTone, domain.CollectionActionManualFollowUp:
+		_, err = s.q.UpdateSequence(ctx, db.UpdateSequenceParams{
+			ID:   seq.ID,
+			Tone: pgtype.Text{String: string(state.RecommendedTone), Valid: true},
+		})
+		if err != nil {
+			return domain.ReminderSequence{}, nil, fmt.Errorf("update tone: %w", err)
+		}
+		err = s.q.UpdatePendingReminderToneByInvoice(ctx, db.UpdatePendingReminderToneByInvoiceParams{
+			InvoiceID: inv.ID,
+			Tone:      string(state.RecommendedTone),
+		})
+		if err != nil {
+			return domain.ReminderSequence{}, nil, fmt.Errorf("update pending reminders tone: %w", err)
+		}
+	}
+
+	updatedSeq, updatedReminders, err := s.GetSequence(ctx, inv.ID)
+	if err != nil {
+		return domain.ReminderSequence{}, nil, fmt.Errorf("get updated sequence: %w", err)
+	}
+
+	return updatedSeq, updatedReminders, nil
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -13,10 +14,11 @@ import (
 type InvoiceHandler struct {
 	invoices  *service.InvoiceService
 	reminders *service.ReminderService
+	optimizer *service.CollectionOptimizer
 }
 
-func NewInvoiceHandler(invoices *service.InvoiceService, reminders *service.ReminderService) *InvoiceHandler {
-	return &InvoiceHandler{invoices: invoices, reminders: reminders}
+func NewInvoiceHandler(invoices *service.InvoiceService, reminders *service.ReminderService, optimizer *service.CollectionOptimizer) *InvoiceHandler {
+	return &InvoiceHandler{invoices: invoices, reminders: reminders, optimizer: optimizer}
 }
 
 // List godoc — GET /api/v1/invoices
@@ -36,7 +38,7 @@ func (h *InvoiceHandler) List(w http.ResponseWriter, r *http.Request) {
 
 	items := make([]any, len(invoices))
 	for i, inv := range invoices {
-		items[i] = shapeInvoice(inv)
+		items[i] = h.shapeInvoiceWithCollection(r.Context(), inv)
 	}
 	respond(w, http.StatusOK, map[string]any{
 		"data":   items,
@@ -121,7 +123,7 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	respond(w, http.StatusCreated, shapeInvoice(inv))
+	respond(w, http.StatusCreated, h.shapeInvoiceWithCollection(r.Context(), inv))
 }
 
 // Get godoc — GET /api/v1/invoices/{id}
@@ -136,7 +138,7 @@ func (h *InvoiceHandler) Get(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, err)
 		return
 	}
-	respond(w, http.StatusOK, shapeInvoice(inv))
+	respond(w, http.StatusOK, h.shapeInvoiceWithCollection(r.Context(), inv))
 }
 
 // Update godoc — PATCH /api/v1/invoices/{id}
@@ -187,7 +189,7 @@ func (h *InvoiceHandler) Update(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, err)
 		return
 	}
-	respond(w, http.StatusOK, shapeInvoice(inv))
+	respond(w, http.StatusOK, h.shapeInvoiceWithCollection(r.Context(), inv))
 }
 
 // Delete godoc — DELETE /api/v1/invoices/{id}
@@ -216,7 +218,7 @@ func (h *InvoiceHandler) Pay(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, err)
 		return
 	}
-	respond(w, http.StatusOK, shapeInvoice(inv))
+	respond(w, http.StatusOK, h.shapeInvoiceWithCollection(r.Context(), inv))
 }
 
 // Events godoc — GET /api/v1/invoices/{id}/events
@@ -249,6 +251,62 @@ func (h *InvoiceHandler) Events(w http.ResponseWriter, r *http.Request) {
 	respond(w, http.StatusOK, map[string]any{"data": items})
 }
 
+// ApplyOptimizer godoc — POST /api/v1/invoices/{id}/optimizer/apply
+func (h *InvoiceHandler) ApplyOptimizer(w http.ResponseWriter, r *http.Request) {
+	userID := middleware.UserIDFromCtx(r.Context())
+	invoiceID, ok := parseUUID(w, r, "id")
+	if !ok {
+		return
+	}
+
+	inv, err := h.invoices.GetInvoice(r.Context(), invoiceID, userID)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+
+	state, err := h.optimizer.RefreshInvoice(r.Context(), invoiceID)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+
+	_, _, err = h.reminders.ApplyCollectionRecommendation(r.Context(), inv, state)
+	if err != nil {
+		respondErr(w, err)
+		return
+	}
+
+	_ = h.optimizer.MarkApplied(r.Context(), invoiceID)
+	respond(w, http.StatusOK, map[string]any{"message": "optimizer recommendation applied"})
+}
+
+func (h *InvoiceHandler) getCollectionState(ctx context.Context, inv domain.Invoice) *domain.CollectionState {
+	if h.optimizer == nil {
+		return nil
+	}
+	if inv.Status == domain.InvoiceStatusPaid || inv.Status == domain.InvoiceStatusCancelled {
+		return nil
+	}
+	state, err := h.optimizer.GetStoredState(ctx, inv.ID)
+	if err == nil && state != nil {
+		return state
+	}
+	if inv.Status == domain.InvoiceStatusActive || inv.Status == domain.InvoiceStatusDraft {
+		fresh, err := h.optimizer.RefreshInvoice(ctx, inv.ID)
+		if err == nil {
+			return &fresh
+		}
+	}
+	return nil
+}
+
+func (h *InvoiceHandler) shapeInvoiceWithCollection(ctx context.Context, inv domain.Invoice) map[string]any {
+	m := shapeInvoice(inv)
+	m["collections"] = shapeCollectionState(h.getCollectionState(ctx, inv))
+	return m
+}
+
 // shapeInvoice produces the invoice JSON envelope.
 func shapeInvoice(inv domain.Invoice) map[string]any {
 	m := map[string]any{
@@ -272,6 +330,31 @@ func shapeInvoice(inv domain.Invoice) map[string]any {
 	}
 	if inv.PaidAt != nil {
 		m["paid_at"] = inv.PaidAt
+	}
+	return m
+}
+
+func shapeCollectionState(state *domain.CollectionState) map[string]any {
+	if state == nil {
+		return nil
+	}
+	m := map[string]any{
+		"risk_score":        state.RiskScore,
+		"engagement_state":  state.EngagementState,
+		"next_best_action":  state.NextBestAction,
+		"recommended_tone":  state.RecommendedTone,
+		"reasons":           state.Reasons,
+		"metrics":           state.Metrics,
+		"last_evaluated_at": state.LastEvaluatedAt,
+	}
+	if state.RecommendedSendAt != nil {
+		m["recommended_send_at"] = state.RecommendedSendAt.Format(time.RFC3339)
+	}
+	if state.LastEventAt != nil {
+		m["last_event_at"] = state.LastEventAt.Format(time.RFC3339)
+	}
+	if state.AppliedAt != nil {
+		m["applied_at"] = state.AppliedAt.Format(time.RFC3339)
 	}
 	return m
 }
