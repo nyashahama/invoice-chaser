@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import CollectionsRecommendationCard from "./CollectionsRecommendationCard";
 import type {
   ApiInvoice,
   InvoiceEvent,
@@ -12,9 +13,11 @@ import type {
 import { formatCurrency, formatDate } from "./view-models";
 
 interface InvoiceDetailProps {
+  applyingOptimizer?: boolean;
   events: InvoiceEvent[];
   eventsLoading: boolean;
   invoice: ApiInvoice | null;
+  onApplyOptimizer: () => Promise<void>;
   onCreateSequence: (input: {
     interval_days: number[];
     tone: InvoiceTone;
@@ -35,9 +38,11 @@ const BTN_PRIMARY = "inline-flex items-center gap-2.5 bg-green text-black font-m
 const BTN_GHOST = "inline-flex items-center gap-2 text-text-dim font-mono text-xs tracking-[0.08em] uppercase hover:text-text transition-colors py-4 bg-transparent border-none cursor-pointer";
 
 export default function InvoiceDetail({
+  applyingOptimizer,
   events,
   eventsLoading,
   invoice,
+  onApplyOptimizer,
   onCreateSequence,
   onMarkPaid,
   onRegenerate,
@@ -163,6 +168,14 @@ export default function InvoiceDetail({
           value={String(invoice.days_overdue ?? 0)}
         />
       </div>
+
+      {invoice.collections ? (
+        <CollectionsRecommendationCard
+          loading={applyingOptimizer}
+          onApply={() => onApplyOptimizer?.() ?? Promise.resolve()}
+          state={invoice.collections}
+        />
+      ) : null}
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5">
         <section className="rounded-lg border border-border-default p-4">

@@ -13,6 +13,7 @@ import {
 import { useSession } from "@/context/SessionContext";
 import { isApiError } from "@/lib/api/errors";
 import {
+  applyInvoiceOptimizer,
   createInvoice,
   listInvoiceEvents,
   listInvoices,
@@ -43,6 +44,7 @@ export default function Dashboard() {
   const [events, setEvents] = useState<InvoiceEvent[]>([]);
   const [loadingSequence, setLoadingSequence] = useState(false);
   const [loadingEvents, setLoadingEvents] = useState(false);
+  const [applyingOptimizer, setApplyingOptimizer] = useState(false);
 
   const selectedInvoice = useMemo(
     () => invoices.find((invoice) => invoice.id === selectedInvoiceId) ?? null,
@@ -213,6 +215,24 @@ export default function Dashboard() {
     await changePassword(input);
   }
 
+  async function handleApplyOptimizer() {
+    if (!selectedInvoice) {
+      return;
+    }
+
+    setApplyingOptimizer(true);
+    try {
+      await applyInvoiceOptimizer(selectedInvoice.id);
+      await Promise.all([
+        loadInvoices(),
+        loadSequence(selectedInvoice.id),
+        loadEvents(selectedInvoice.id),
+      ]);
+    } finally {
+      setApplyingOptimizer(false);
+    }
+  }
+
   if (!user) {
     return null;
   }
@@ -265,9 +285,11 @@ export default function Dashboard() {
         </div>
 
         <InvoiceDetail
+          applyingOptimizer={applyingOptimizer}
           events={events}
           eventsLoading={loadingEvents}
           invoice={selectedInvoice}
+          onApplyOptimizer={handleApplyOptimizer}
           onCreateSequence={handleCreateSequence}
           onMarkPaid={handleMarkPaid}
           onRegenerate={handleRegenerate}
