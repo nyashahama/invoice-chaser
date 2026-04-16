@@ -32,6 +32,7 @@ type Querier interface {
 	GetInvoiceByClickToken(ctx context.Context, clickToken string) (Invoice, error)
 	GetInvoiceByID(ctx context.Context, id uuid.UUID) (Invoice, error)
 	GetInvoiceByIDForUser(ctx context.Context, arg GetInvoiceByIDForUserParams) (Invoice, error)
+	GetInvoiceCollectionState(ctx context.Context, invoiceID uuid.UUID) (InvoiceCollectionState, error)
 	GetRefreshToken(ctx context.Context, tokenHash string) (RefreshToken, error)
 	GetReminderByID(ctx context.Context, id uuid.UUID) (Reminder, error)
 	GetReminderByOpenToken(ctx context.Context, openToken string) (Reminder, error)
@@ -45,6 +46,7 @@ type Querier interface {
 	ListInvoicesForUser(ctx context.Context, arg ListInvoicesForUserParams) ([]Invoice, error)
 	ListOverdueInvoices(ctx context.Context) ([]Invoice, error)
 	ListRemindersByInvoice(ctx context.Context, invoiceID uuid.UUID) ([]Reminder, error)
+	MarkCollectionStateApplied(ctx context.Context, invoiceID uuid.UUID) error
 	MarkInvoicePaid(ctx context.Context, arg MarkInvoicePaidParams) (Invoice, error)
 	MarkInvoicePaidAndCancelReminders(ctx context.Context, arg MarkInvoicePaidAndCancelRemindersParams) error
 	MarkRefreshTokenUsed(ctx context.Context, id uuid.UUID) error
@@ -65,9 +67,11 @@ type Querier interface {
 	StoreGeneratedEmail(ctx context.Context, arg StoreGeneratedEmailParams) error
 	TouchAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error
 	UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) (Invoice, error)
+	UpdatePendingReminderToneByInvoice(ctx context.Context, arg UpdatePendingReminderToneByInvoiceParams) error
 	UpdateSequence(ctx context.Context, arg UpdateSequenceParams) (ReminderSequence, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 	UpdateUserPasswordHash(ctx context.Context, arg UpdateUserPasswordHashParams) error
+	UpsertInvoiceCollectionState(ctx context.Context, arg UpsertInvoiceCollectionStateParams) error
 }
 
 var _ Querier = (*Queries)(nil)

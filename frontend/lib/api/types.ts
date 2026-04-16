@@ -55,6 +55,7 @@ export interface ApiInvoice {
   client_email: string;
   client_name: string;
   click_token?: string;
+  collections?: CollectionState | null;
   created_at: string;
   currency: string;
   days_overdue?: number;
@@ -83,6 +84,47 @@ export interface InvoiceSequenceInput {
 }
 
 export type InvoiceTone = "polite" | "firm" | "final";
+
+export type CollectionEngagementState =
+  | "unengaged"
+  | "opened"
+  | "clicked"
+  | "bounced"
+  | "paid";
+
+export type CollectionNextBestAction =
+  | "none"
+  | "wait"
+  | "send_now"
+  | "escalate_tone"
+  | "fix_email"
+  | "manual_follow_up";
+
+export interface CollectionReason {
+  code: string;
+  message: string;
+}
+
+export interface CollectionMetrics {
+  reminder_count: number;
+  open_count: number;
+  click_count: number;
+  failed_count: number;
+  last_sent_at?: string | null;
+}
+
+export interface CollectionState {
+  risk_score: number;
+  engagement_state: CollectionEngagementState;
+  next_best_action: CollectionNextBestAction;
+  recommended_tone: InvoiceTone;
+  recommended_send_at?: string | null;
+  reasons: CollectionReason[];
+  metrics: CollectionMetrics;
+  last_event_at?: string | null;
+  last_evaluated_at: string;
+  applied_at?: string | null;
+}
 
 export interface CreateInvoiceInput {
   amount_cents: number;

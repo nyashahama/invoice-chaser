@@ -27,6 +27,7 @@ type RouterConfig struct {
 	Reminders *service.ReminderService
 	Users     *service.UserService
 	Scheduler *service.SchedulerService
+	Optimizer *service.CollectionOptimizer
 
 	// PayFast — sourced from config.Config, never hardcoded.
 	PayFastVerifier    handler.PayFastVerifier
@@ -51,7 +52,7 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	// ── Handler instances ────────────────────────────────────────────────────
 	authH := handler.NewAuthHandler(cfg.Users, cfg.RefreshExpiry, cfg.CookieSecure, cfg.CookieSameSite)
 	userH := handler.NewUserHandler(cfg.Users)
-	invoiceH := handler.NewInvoiceHandler(cfg.Invoices, cfg.Reminders)
+	invoiceH := handler.NewInvoiceHandler(cfg.Invoices, cfg.Reminders, cfg.Optimizer)
 	remH := handler.NewReminderHandler(cfg.Invoices, cfg.Reminders)
 	webhookH := handler.NewWebhookHandler(
 		cfg.Invoices,
@@ -116,6 +117,7 @@ func NewRouter(cfg RouterConfig) http.Handler {
 		r.Delete("/api/v1/invoices/{id}", invoiceH.Delete)
 		r.Post("/api/v1/invoices/{id}/pay", invoiceH.Pay)
 		r.Get("/api/v1/invoices/{id}/events", invoiceH.Events)
+		r.Post("/api/v1/invoices/{id}/optimizer/apply", invoiceH.ApplyOptimizer)
 
 		// Sequences
 		r.Get("/api/v1/invoices/{id}/sequence", remH.GetSequence)

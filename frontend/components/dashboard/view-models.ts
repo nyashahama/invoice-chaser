@@ -1,5 +1,6 @@
 import type {
   ApiInvoice,
+  CollectionNextBestAction,
   CreateInvoiceInput,
   InvoiceTone,
 } from "@/lib/api/types";
@@ -94,4 +95,40 @@ export function formatDate(date: string) {
     month: "short",
     year: "numeric",
   });
+}
+
+export function collectionActionLabel(action: CollectionNextBestAction): string {
+  const LABELS: Record<CollectionNextBestAction, string> = {
+    none: "No action",
+    wait: "Wait",
+    send_now: "Send now",
+    escalate_tone: "Escalate tone",
+    fix_email: "Fix email",
+    manual_follow_up: "Manual follow-up",
+  };
+  return LABELS[action];
+}
+
+export function collectionRiskLabel(score: number): string {
+  if (score >= 70) {
+    return "High risk";
+  }
+  if (score >= 40) {
+    return "Medium risk";
+  }
+  return "Low risk";
+}
+
+export function collectionActionColor(action: CollectionNextBestAction): string {
+  switch (action) {
+    case "fix_email":
+      return "bg-red text-white";
+    case "send_now":
+    case "escalate_tone":
+      return "bg-amber text-black";
+    case "wait":
+    case "none":
+    case "manual_follow_up":
+      return "bg-white/[0.05] text-text-dim";
+  }
 }

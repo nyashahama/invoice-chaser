@@ -2,7 +2,7 @@
 
 import type { ApiInvoice } from "@/lib/api/types";
 
-import { formatCurrency, formatDate } from "./view-models";
+import { collectionActionColor, formatCurrency, formatDate } from "./view-models";
 
 interface InvoiceListProps {
   invoices: ApiInvoice[];
@@ -58,9 +58,20 @@ export default function InvoiceList({
               >
                 <div className="flex items-center justify-between gap-3">
                   <strong>{invoice.client_name}</strong>
-                  <span className="rounded-full bg-white/[0.05] px-2.5 py-1.5 font-mono text-[11px] uppercase text-text-dim">
-                    {invoice.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {invoice.collections ? (
+                      <span
+                        className={`rounded px-2 py-1 font-mono text-[10px] uppercase ${
+                          collectionActionColor(invoice.collections.next_best_action)
+                        }`}
+                      >
+                        {invoice.collections.next_best_action.replace("_", " ")}
+                      </span>
+                    ) : null}
+                    <span className="rounded-full bg-white/[0.05] px-2.5 py-1.5 font-mono text-[11px] uppercase text-text-dim">
+                      {invoice.status}
+                    </span>
+                  </div>
                 </div>
                 <div className="grid gap-1 font-mono text-xs text-text-dim">
                   <span>{invoice.invoice_number}</span>

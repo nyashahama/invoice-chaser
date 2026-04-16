@@ -5,6 +5,8 @@
 package db
 
 import (
+	"encoding/json"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -54,6 +56,22 @@ type Invoice struct {
 	PayfastPaymentID pgtype.Text        `json:"payfast_payment_id"`
 	CreatedAt        pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt        pgtype.Timestamptz `json:"updated_at"`
+}
+
+type InvoiceCollectionState struct {
+	InvoiceID         uuid.UUID          `json:"invoice_id"`
+	RiskScore         int32              `json:"risk_score"`
+	EngagementState   string             `json:"engagement_state"`
+	NextBestAction    string             `json:"next_best_action"`
+	RecommendedTone   string             `json:"recommended_tone"`
+	RecommendedSendAt pgtype.Timestamptz `json:"recommended_send_at"`
+	Reasons           json.RawMessage    `json:"reasons"`
+	Metrics           json.RawMessage    `json:"metrics"`
+	LastEventAt       pgtype.Timestamptz `json:"last_event_at"`
+	LastEvaluatedAt   pgtype.Timestamptz `json:"last_evaluated_at"`
+	AppliedAt         pgtype.Timestamptz `json:"applied_at"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
 }
 
 type RefreshToken struct {

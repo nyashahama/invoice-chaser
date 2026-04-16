@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -248,6 +249,32 @@ func (q *Queries) GetInvoiceByIDForUser(ctx context.Context, arg GetInvoiceByIDF
 	return i, err
 }
 
+const getInvoiceCollectionState = `-- name: GetInvoiceCollectionState :one
+SELECT invoice_id, risk_score, engagement_state, next_best_action, recommended_tone, recommended_send_at, reasons, metrics, last_event_at, last_evaluated_at, applied_at, created_at, updated_at FROM invoice_collection_states
+WHERE invoice_id = $1
+`
+
+func (q *Queries) GetInvoiceCollectionState(ctx context.Context, invoiceID uuid.UUID) (InvoiceCollectionState, error) {
+	row := q.db.QueryRow(ctx, getInvoiceCollectionState, invoiceID)
+	var i InvoiceCollectionState
+	err := row.Scan(
+		&i.InvoiceID,
+		&i.RiskScore,
+		&i.EngagementState,
+		&i.NextBestAction,
+		&i.RecommendedTone,
+		&i.RecommendedSendAt,
+		&i.Reasons,
+		&i.Metrics,
+		&i.LastEventAt,
+		&i.LastEvaluatedAt,
+		&i.AppliedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listInvoicesForUser = `-- name: ListInvoicesForUser :many
 SELECT id, user_id, invoice_number, client_name, client_email, client_contact, amount_cents, currency, due_date, description, notes, status, paid_at, payment_source, external_id, click_token, payfast_payment_id, created_at, updated_at FROM invoices
 WHERE user_id = $1
@@ -353,6 +380,17 @@ func (q *Queries) ListOverdueInvoices(ctx context.Context) ([]Invoice, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const markCollectionStateApplied = `-- name: MarkCollectionStateApplied :exec
+UPDATE invoice_collection_states
+SET applied_at = NOW()
+WHERE invoice_id = $1
+`
+
+func (q *Queries) MarkCollectionStateApplied(ctx context.Context, invoiceID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, markCollectionStateApplied, invoiceID)
+	return err
 }
 
 const markInvoicePaid = `-- name: MarkInvoicePaid :one
@@ -502,4 +540,55 @@ func (q *Queries) UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) (I
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const upsertInvoiceCollectionState = `-- name: UpsertInvoiceCollectionState :exec
+INSERT INTO invoice_collection_states (
+    invoice_id, risk_score, engagement_state, next_best_action,
+    recommended_tone, recommended_send_at, reasons, metrics,
+    last_event_at, last_evaluated_at, applied_at
+)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+ON CONFLICT (invoice_id) DO UPDATE SET
+    risk_score = EXCLUDED.risk_score,
+    engagement_state = EXCLUDED.engagement_state,
+    next_best_action = EXCLUDED.next_best_action,
+    recommended_tone = EXCLUDED.recommended_tone,
+    recommended_send_at = EXCLUDED.recommended_send_at,
+    reasons = EXCLUDED.reasons,
+    metrics = EXCLUDED.metrics,
+    last_event_at = EXCLUDED.last_event_at,
+    last_evaluated_at = EXCLUDED.last_evaluated_at,
+    applied_at = EXCLUDED.applied_at
+`
+
+type UpsertInvoiceCollectionStateParams struct {
+	InvoiceID         uuid.UUID          `json:"invoice_id"`
+	RiskScore         int32              `json:"risk_score"`
+	EngagementState   string             `json:"engagement_state"`
+	NextBestAction    string             `json:"next_best_action"`
+	RecommendedTone   string             `json:"recommended_tone"`
+	RecommendedSendAt pgtype.Timestamptz `json:"recommended_send_at"`
+	Reasons           json.RawMessage    `json:"reasons"`
+	Metrics           json.RawMessage    `json:"metrics"`
+	LastEventAt       pgtype.Timestamptz `json:"last_event_at"`
+	LastEvaluatedAt   pgtype.Timestamptz `json:"last_evaluated_at"`
+	AppliedAt         pgtype.Timestamptz `json:"applied_at"`
+}
+
+func (q *Queries) UpsertInvoiceCollectionState(ctx context.Context, arg UpsertInvoiceCollectionStateParams) error {
+	_, err := q.db.Exec(ctx, upsertInvoiceCollectionState,
+		arg.InvoiceID,
+		arg.RiskScore,
+		arg.EngagementState,
+		arg.NextBestAction,
+		arg.RecommendedTone,
+		arg.RecommendedSendAt,
+		arg.Reasons,
+		arg.Metrics,
+		arg.LastEventAt,
+		arg.LastEvaluatedAt,
+		arg.AppliedAt,
+	)
+	return err
 }

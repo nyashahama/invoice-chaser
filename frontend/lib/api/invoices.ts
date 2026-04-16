@@ -53,3 +53,7 @@ export function markInvoicePaid(id: string) {
 export function listInvoiceEvents(id: string) {
   return apiClient.get<{ data: InvoiceEvent[] }>(`/api/v1/invoices/${id}/events`);
 }
+
+export function applyInvoiceOptimizer(id: string) {
+  return apiClient.post<{ message: string }>(`/api/v1/invoices/${id}/optimizer/apply`);
+}
